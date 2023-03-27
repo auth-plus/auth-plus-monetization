@@ -1,6 +1,7 @@
 .PHONY: infra/up
 infra/up:
 	docker compose up -d
+	HOST=localhost make migration/up
 
 .PHONY: infra/down
 infra/down:
@@ -15,13 +16,8 @@ dev:
 test:
 	make infra/up
 	docker compose exec -T api poetry install
-	docker compose exec -T api npm test
+	docker compose exec -T api poetry run pytest
 	make clean/docker
-
-.PHONY: clean/node
-clean/node:
-	rm -rf node_modules
-	rm package-lock.json
 
 .PHONY: clean/docker
 clean/docker:
@@ -32,3 +28,11 @@ clean/docker:
 	docker network prune -f
 	rm -rf db/schema.sql
 	rm -f db/schema.sql
+
+.PHONY: clean/test
+clean/test:
+	find . | grep -E "(/__pycache__$|\.pyc$|\.pyo$\)" | xargs rm -rf
+
+.PHONY: migration/up
+migration/up:
+	docker run -t --network=host -v "$(shell pwd)/db:/db" ghcr.io/amacneil/dbmate:1.16 --url postgres://root:db_password@$(HOST):5432/monetization?sslmode=disable --wait --wait-timeout 60s --no-dump-schema up
