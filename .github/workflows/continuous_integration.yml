@@ -6,7 +6,6 @@ on:
     branches: [staging, main]
 
 env:
-  PYTHON_VERSION: 3.10
   POETRY_VERSION: 1.4.1
 
 jobs:
@@ -14,13 +13,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/cache@v3
-        with:
-          path: ~/.cache/pypoetry
-          key: poetry-cache-${{ runner.os }}-${{ env.PYTHON_VERSION }}-${{ env.POETRY_VERSION }}
       - uses: actions/setup-python@v4
         with:
-          python-version: ${{ env.PYTHON_VERSION }}
+          python-version: "3.10"
       - name: Install poetry
         run: curl -sSL https://install.python-poetry.org | python3 - --version ${{ env.POETRY_VERSION }}
       - name: Install Dependencies
@@ -37,13 +32,9 @@ jobs:
       PYTHON_ENV: test
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/cache@v3
-        with:
-          path: ~/.cache/pypoetry
-          key: poetry-cache-${{ runner.os }}-${{ env.PYTHON_VERSION }}-${{ env.POETRY_VERSION }}
       - uses: actions/setup-python@v4
         with:
-          python-version: ${{ env.PYTHON_VERSION }}
+          python-version: "3.10"
       - name: Install poetry
         run: curl -sSL https://install.python-poetry.org | python3 - --version ${{ env.POETRY_VERSION }}
       - name: Install Dependencies
@@ -51,14 +42,30 @@ jobs:
       - name: Generating Coverage
         run: poetry run coverage run -m pytest
       - name: Exporting XML
-        run: poetry run coverage xml
+        run: poetry run coverage lcov
+      - name: SonarCloud Scan
+        uses: sonarsource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      - name: Code Climate Scan
+        uses: paambaati/codeclimate-action@v3.2.0
+        env:
+          CC_TEST_REPORTER_ID: ${{ secrets.CODECLIMATE_TOKEN }}
+        with:
+          coverageLocations: ${{github.workspace}}/coverage.lcov:lcov
+      - name: Codacy Scan
+        uses: codacy/codacy-coverage-reporter-action@v1.3.0
+        with:
+          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+          coverage-reports: ./coverage.lcov
   Lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
         with:
-          python-version: ${{ env.PYTHON_VERSION }}
+          python-version: "3.10"
       - name: Install poetry
         run: curl -sSL https://install.python-poetry.org | python3 - --version ${{ env.POETRY_VERSION }}
       - name: Install Dependencies
