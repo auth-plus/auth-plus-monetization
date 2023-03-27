@@ -1,0 +1,55 @@
+name: Continuous Integration on Pull Request
+on:
+  pull_request:
+    branches: [staging, main]
+  push:
+    branches: [staging, main]
+
+env:
+  PYTHON_VERSION: 3.10
+  POETRY_VERSION: 1.4.1
+
+jobs:
+  Audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+      - uses: actions-rs/audit-check@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+  Test:
+    runs-on: ubuntu-latest
+    env:
+      APP_NAME: auth-plus-monetization
+      PORT: 5005
+      PYTHON_ENV: test
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/cache@v3
+        with:
+          path: ~/.cache/pypoetry
+          key: poetry-cache-${{ runner.os }}-${{ env.PYTHON_VERSION }}-${{ env.POETRY_VERSION }}
+      - uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: Install poetry
+        run: curl -sSL https://install.python-poetry.org | python3 - --version ${{ env.POETRY_VERSION }}
+      - name: Install Dependencies
+        run: poetry install
+  Lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: Install poetry
+        run: curl -sSL https://install.python-poetry.org | python3 - --version ${{ env.POETRY_VERSION }}
+      - name: Install Dependencies
+        run: poetry install
+      - name: Running lint
+        run: poetry run flake8 src/ -v
