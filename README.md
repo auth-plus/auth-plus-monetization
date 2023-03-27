@@ -76,6 +76,11 @@ poetry run coverage run -m pytest
 poetry: <https://python-poetry.org/docs/#installation>
 python: <https://github.com/pyenv/pyenv>
 
+### Creating new migrations with dbmate
+
+Install dbmate (<https://github.com/amacneil/dbmate#installation>)
+execute `dbmate new <name-of-migration>`
+
 ### VSCode does not resolve libs
 
 First execute this commands
