@@ -5,4 +5,4 @@ COPY . .
 ENV POETRY_VERSION=1.4.1
 RUN pip install "poetry==$POETRY_VERSION"
 RUN poetry install
-# RUN poetry run flask --app auth-plus-monetization/presentation/server run
+EXPOSE 5004
