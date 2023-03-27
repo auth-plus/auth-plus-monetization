@@ -42,7 +42,7 @@ jobs:
       - name: Generating Coverage
         run: poetry run coverage run -m pytest
       - name: Exporting XML
-        run: poetry run coverage xml
+        run: poetry run coverage lcov
       - name: SonarCloud Scan
         uses: sonarsource/sonarcloud-github-action@master
         env:
@@ -53,12 +53,12 @@ jobs:
         env:
           CC_TEST_REPORTER_ID: ${{ secrets.CODECLIMATE_TOKEN }}
         with:
-          coverageLocations: ${{github.workspace}}/coverage/lcov.info:lcov
+          coverageLocations: ${{github.workspace}}/coverage.lcov:lcov
       - name: Codacy Scan
         uses: codacy/codacy-coverage-reporter-action@v1.3.0
         with:
           project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
-          coverage-reports: ./coverage/lcov.info
+          coverage-reports: ./coverage.lcov
   Lint:
     runs-on: ubuntu-latest
     steps:
