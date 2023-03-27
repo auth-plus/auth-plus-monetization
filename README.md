@@ -2,6 +2,12 @@
 
 This project it's a sample for monetization system. It use a hexagonal architeture with layer for dependency manager.
 
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=auth-plus_auth-plus-monetization&metric=coverage)](https://sonarcloud.io/summary/new_code?id=auth-plus_auth-plus-monetization)
+
+[![Test Coverage](https://api.codeclimate.com/v1/badges/61f1c963ee5c1420d31b/test_coverage)](https://codeclimate.com/github/auth-plus/auth-plus-monetization/test_coverage)
+
+[![Codacy Badge](https://app.codacy.com/project/badge/Coverage/c4ceb5e2b57948b7af282f3f58f87ab9)](https://app.codacy.com/gh/auth-plus/auth-plus-monetization/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_coverage)
+
 ## Documentation
 
 ### Table Event-Price
@@ -41,6 +47,9 @@ make test
 
 # developer and test enviroment
 make dev
+
+# Installing dependency
+poetry install
 
 # Running HTTP server
 poetry run flask --app src/presentation/server run --port $PORT
