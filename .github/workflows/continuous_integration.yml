@@ -14,13 +14,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions-rs/toolchain@v1
+      - uses: actions/cache@v3
         with:
-          profile: minimal
-          toolchain: stable
-      - uses: actions-rs/audit-check@v1
+          path: ~/.cache/pypoetry
+          key: poetry-cache-${{ runner.os }}-${{ env.PYTHON_VERSION }}-${{ env.POETRY_VERSION }}
+      - uses: actions/setup-python@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: Install poetry
+        run: curl -sSL https://install.python-poetry.org | python3 - --version ${{ env.POETRY_VERSION }}
+      - name: Install Dependencies
+        run: poetry install
+      - name: Installing audit tool
+        run: poetry self add poetry-audit-plugin
+      - name: Executing
+        run: poetry audit
   Test:
     runs-on: ubuntu-latest
     env:
@@ -40,6 +48,10 @@ jobs:
         run: curl -sSL https://install.python-poetry.org | python3 - --version ${{ env.POETRY_VERSION }}
       - name: Install Dependencies
         run: poetry install
+      - name: Generating Coverage
+        run: poetry run coverage run -m pytest
+      - name: Exporting XML
+        run: poetry run coverage xml
   Lint:
     runs-on: ubuntu-latest
     steps:
