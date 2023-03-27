@@ -1,12 +1,12 @@
 # Auth+ Monetization
 
-This project it's a sample for monetization system. It use a hexagonal architeture with layer for dependency manager.
-
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=auth-plus_auth-plus-monetization&metric=coverage)](https://sonarcloud.io/summary/new_code?id=auth-plus_auth-plus-monetization)
 
 [![Test Coverage](https://api.codeclimate.com/v1/badges/61f1c963ee5c1420d31b/test_coverage)](https://codeclimate.com/github/auth-plus/auth-plus-monetization/test_coverage)
 
 [![Codacy Badge](https://app.codacy.com/project/badge/Coverage/c4ceb5e2b57948b7af282f3f58f87ab9)](https://app.codacy.com/gh/auth-plus/auth-plus-monetization/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_coverage)
+
+This project it's a sample for monetization system. It use a hexagonal architeture with layer for dependency manager.
 
 ## Documentation
 
@@ -35,6 +35,11 @@ In ocasion of changing, only exist 2 possibility
 - Pre->Post: everything goes normal, except that on the first charge will contain a discount on the value of credit
 - Post->Pre: a charge will be created at the time containing all event. Then from this client will follow the flow of Pre-Paid
 
+## Pré-requisite
+
+- Docker v23.0.1
+- Python v3.10.6
+
 ## Commands
 
 ```bash
@@ -59,4 +64,31 @@ poetry run black src/ -v
 
 # Running lint
 poetry run flake8 src/ -v
+
+# Running test
+poetry run coverage run -m pytest
 ```
+
+## Dev Hints
+
+### Setup for those who want develop on local machine
+
+poetry: <https://python-poetry.org/docs/#installation>
+python: <https://github.com/pyenv/pyenv>
+
+### Creating new migrations with dbmate
+
+Install dbmate (<https://github.com/amacneil/dbmate#installation>)
+execute `dbmate new <name-of-migration>`
+
+### VSCode does not resolve libs
+
+First execute this commands
+
+```bash
+poetry env list
+poetry env remove <name-of-enviroment>
+poetry install
+```
+
+On VSCode select the interpreter with poetry
