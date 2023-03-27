@@ -4,15 +4,30 @@ This project it's a sample for monetization system. It use a hexagonal architetu
 
 ## Documentation
 
-### Flow for monetization events
+### Table Event-Price
 
-1. Event listened
-2. Add invoice-item
+- The table event-price should be public
+- This table contains all information regard event and cost of it
+- Price can be different between plan's type for the same event
 
-### Flow for monetization schedule
+### Types of plan
 
-1. Once a month create a draft invoice
-2. Add invoice-item
+There will be two types of monetization: Pre-Paid and Post-Paid.
+
+#### Pre-Paid
+
+Pre paid organizations will paid before usage, which means that each event will be disconted on the credit. They can not buy events, they can only buy credit.
+
+#### Post-Paid
+
+Post paid organizations will be charged after usage, which means that each month will be calculated all events used and will be charged. All clients must choose a day to be charged except 29, 30, 31
+
+#### Change plan type
+
+In ocasion of changing, only exist 2 possibility
+
+- Pre->Post: everything goes normal, except that on the first charge will contain a discount on the value of credit
+- Post->Pre: a charge will be created at the time containing all event. Then from this client will follow the flow of Pre-Paid
 
 ## Commands
 
