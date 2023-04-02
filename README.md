@@ -64,6 +64,7 @@ poetry run black src/ -v
 
 # Running lint
 poetry run flake8 src/ -v
+poetry run mypy src/ -v
 
 # Running test
 poetry run coverage run -m pytest
@@ -86,8 +87,9 @@ execute `dbmate new <name-of-migration>`
 First execute this commands
 
 ```bash
+poetry config virtualenvs.in-project true
 poetry env list
-poetry env remove <name-of-enviroment>
+poetry env remove <name-of-enviroment> # remove the only listed env
 poetry install
 ```
 
