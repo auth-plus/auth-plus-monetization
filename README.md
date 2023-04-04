@@ -35,6 +35,10 @@ In ocasion of changing, only exist 2 possibility
 - Pre->Post: everything goes normal, except that on the first charge will contain a discount on the value of credit
 - Post->Pre: a charge will be created at the time containing all event. Then from this client will follow the flow of Pre-Paid
 
+### Model Entity Relation
+
+![diagram made by DBeaver](/db/MER.png "Database Diagram")
+
 ## Pré-requisite
 
 - Docker v23.0.1
