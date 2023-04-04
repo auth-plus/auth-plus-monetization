@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS "subscription" (
     "account_id" UUID NOT NULL,
     "created_at" TIMESTAMP NOT NULL DEFAULT Timezone('utc', Now()),
     PRIMARY KEY ("id"),
-    CONSTRAINT fk_e_account_id FOREIGN KEY("account_id") REFERENCES "account"("id")
+    CONSTRAINT fk_s_account_id FOREIGN KEY("account_id") REFERENCES "account"("id")
 );
 
 CREATE TABLE IF NOT EXISTS "discount" (
@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS "discount" (
     "is_enable"  BOOLEAN DEFAULT true,
     "created_at" TIMESTAMP NOT NULL DEFAULT Timezone('utc', Now()),
     PRIMARY KEY ("id"),
-    CONSTRAINT fk_e_account_id FOREIGN KEY("account_id") REFERENCES "account"("id")
+    CONSTRAINT fk_d_account_id FOREIGN KEY("account_id") REFERENCES "account"("id")
 );
 
 CREATE TABLE IF NOT EXISTS "ledger" (
