@@ -35,6 +35,10 @@ In ocasion of changing, only exist 2 possibility
 - Pre->Post: everything goes normal, except that on the first charge will contain a discount on the value of credit
 - Post->Pre: a charge will be created at the time containing all event. Then from this client will follow the flow of Pre-Paid
 
+### Model Entity Relation
+
+![diagram made by DBeaver](/db/MER.png "Database Diagram")
+
 ## Pré-requisite
 
 - Docker v23.0.1
@@ -64,6 +68,7 @@ poetry run black src/ -v
 
 # Running lint
 poetry run flake8 src/ -v
+poetry run mypy src/ -v
 
 # Running test
 poetry run coverage run -m pytest
@@ -86,8 +91,9 @@ execute `dbmate new <name-of-migration>`
 First execute this commands
 
 ```bash
+poetry config virtualenvs.in-project true
 poetry env list
-poetry env remove <name-of-enviroment>
+poetry env remove <name-of-enviroment> # remove the only listed env
 poetry install
 ```
 

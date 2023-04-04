@@ -2,6 +2,7 @@ from flask import Flask
 from flask_wtf.csrf import CSRFProtect
 
 from src.config.envvar import get_env
+from src.core import Core
 
 
 def create_app(test_config=None):
@@ -25,6 +26,11 @@ def create_app(test_config=None):
     @app.route("/health")
     def health():
         return "Ok"
+
+    @app.route("/ledger/receive_credit")
+    def receive_credit():
+        instance = Core.get_instance()
+        return instance
 
     return app
 
