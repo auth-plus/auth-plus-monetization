@@ -30,7 +30,7 @@ clean/docker:
 
 .PHONY: clean/test
 clean/test:
-	find . | grep -E "(/__pycache__$|\.pyc$|\.pyo$\)" | xargs rm -rf
+	find . | grep -E "(/__pycache__$|\.pyc$|\.pyo$\)" | xargs sudo rm -rf
 
 .PHONY: migration/up
 migration/up:

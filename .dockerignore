@@ -1,0 +1,6 @@
+*
+!/db
+!/src
+!/test
+!poetry.lock
+!pyproject.toml

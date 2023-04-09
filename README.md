@@ -63,12 +63,15 @@ poetry install
 # Running HTTP server
 poetry run flask --app src/presentation/server run --port $PORT
 
+# Running Job scheduled (need to be src/presentation folder to execute this command)
+poetry run celery -A src.presentation.job flower --port=5566
+
 # Running formatter
 poetry run black src/ -v
 
 # Running lint
 poetry run flake8 src/ -v
-poetry run mypy src/ -v
+poetry run mypy src/ -v --check-untyped-defs
 
 # Running test
 poetry run coverage run -m pytest
@@ -98,3 +101,9 @@ poetry install
 ```
 
 On VSCode select the interpreter with poetry
+
+### Python not updating because cache folders
+
+```bash
+find . | grep -E "(/__pycache__$|.pyc$|.pyo$)" | xargs sudo rm -rf
+```

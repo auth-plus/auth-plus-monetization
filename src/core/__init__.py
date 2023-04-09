@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 
 from src.core.repository.billing import Billing
+from src.core.repository.ledger import Ledger
 from src.core.usecase.driven.creating_charge import CreatingCharge
 from src.core.usecase.driven.creating_invoice import CreatingInvoice
 from src.core.usecase.driven.creating_transaction import CreatingTransaction
@@ -13,7 +14,7 @@ class Core:
         fetch_billing_user: FetchBillingUser = Billing()
         creating_invoice: CreatingInvoice = Billing()
         creating_charge: CreatingCharge = Billing()
-        creating_transaction: CreatingTransaction = Billing()
+        creating_transaction: CreatingTransaction = Ledger()
 
         receive_credit = ReceiveCredit(
             fetch_billing_user, creating_invoice, creating_charge, creating_transaction
