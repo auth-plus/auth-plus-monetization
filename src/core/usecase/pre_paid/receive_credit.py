@@ -1,4 +1,5 @@
 from uuid import UUID
+
 from src.core.entity.billing import InvoiceItem
 from src.core.usecase.driven.creating_charge import CreatingCharge
 from src.core.usecase.driven.creating_invoice import CreatingInvoice
@@ -24,6 +25,6 @@ class ReceiveCredit:
         item_list = [credit]
         billing_user = self.fetch_billing_user.fetch_by_account_id(account_id)
         invoice = self.creating_invoice.create_invoice(item_list)
-        charge = self.creating_charge.create_charge(invoice)
+        charge = self.creating_charge.create_charge(invoice.id)
         self.creating_transaction.create_transaction(account_id, amount)
         return charge
