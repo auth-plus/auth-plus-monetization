@@ -1,12 +1,22 @@
 import os
+from typing import Optional, TypedDict
 
 
-def get_env():
-    env = {
+class AppVars(TypedDict):
+    name: Optional[str]
+    port: Optional[str]
+    environment: Optional[str]
+
+
+class EnvVars(TypedDict):
+    app: AppVars
+
+
+def get_env() -> EnvVars:
+    return {
         "app": {
             "name": os.getenv("APP_NAME"),
             "port": os.getenv("PORT"),
-            "enviroment": os.getenv("PYTHON_ENV"),
+            "environment": os.getenv("PYTHON_ENV"),
         }
     }
-    return env
