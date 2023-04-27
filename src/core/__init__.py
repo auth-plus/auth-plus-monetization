@@ -1,3 +1,5 @@
+from dataclasses import dataclass
+
 from src.core.repository.billing import Billing
 from src.core.usecase.driven.creating_charge import CreatingCharge
 from src.core.usecase.driven.creating_invoice import CreatingInvoice
@@ -7,8 +9,7 @@ from src.core.usecase.pre_paid.receive_credit import ReceiveCredit
 
 
 class Core:
-    @staticmethod
-    def get_instance():
+    def __init__(self):
         fetch_billing_user: FetchBillingUser = Billing()
         creating_invoice: CreatingInvoice = Billing()
         creating_charge: CreatingCharge = Billing()
@@ -18,5 +19,8 @@ class Core:
             fetch_billing_user, creating_invoice, creating_charge, creating_transaction
         )
 
-        pre_paid = {receive_credit}
-        return {pre_paid}
+        @dataclass
+        class PrePaid:
+            receive_credit: ReceiveCredit
+
+        self.pre_paid = PrePaid(receive_credit)

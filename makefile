@@ -15,8 +15,7 @@ dev:
 .PHONY: test
 test:
 	make infra/up
-	docker compose exec -T api poetry install
-	docker compose exec -T api poetry run pytest
+	docker compose exec -T api pytest
 	make clean/docker
 
 .PHONY: clean/docker

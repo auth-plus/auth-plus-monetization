@@ -29,8 +29,9 @@ def create_app(test_config=None):
 
     @app.route("/ledger/receive_credit")
     def receive_credit():
-        instance = Core.get_instance()
-        return instance
+        core = Core()
+        charge = core.pre_paid.receive_credit.receive_credit()
+        return charge
 
     return app
 
