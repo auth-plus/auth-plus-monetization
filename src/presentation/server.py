@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request
 from flask_wtf.csrf import CSRFProtect
 
 from src.config.envvar import get_env
@@ -27,10 +27,13 @@ def create_app(test_config=None):
     def health():
         return "Ok"
 
-    @app.route("/ledger/receive_credit")
+    @app.route("/ledger/receive_credit", methods=["POST"])
     def receive_credit():
+        request_data = request.get_json()
+        account_id = request_data["account_id"]
+        amount = request_data["amount"]
         core = Core()
-        charge = core.pre_paid.receive_credit.receive_credit()
+        charge = core.pre_paid.receive_credit.receive_credit(account_id, amount)
         return charge
 
     return app

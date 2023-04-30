@@ -18,6 +18,23 @@ services:
     networks:
       - monetization-net
 
+  job:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '5005:5005'
+    command: poetry run celery -A src.presentation.job flower --port=5566
+    environment:
+      APP_NAME: auth-plus-monetization
+      PORT: 5005
+      PYTHON_ENV: development
+    volumes:
+      - .:/app
+    restart: always
+    networks:
+      - monetization-net
+  
   database:
     container_name: postgres
     image: postgres:15.1
@@ -32,6 +49,18 @@ services:
       - v-database:/var/lib/postgres
     networks:
       - monetization-net
+  
+  cache:
+    container_name: redis
+    image: redis:7.0.5
+    hostname: redis
+    restart: always
+    volumes:
+      - v-cache:/data
+    ports:
+      - '6379:6379'
+    networks:
+      - monetization-net
 
 networks:
   monetization-net:
@@ -39,3 +68,4 @@ networks:
 
 volumes:
   v-database:
+  v-cache:

@@ -4,6 +4,12 @@ from uuid import UUID
 
 
 @dataclass
+class BillingUser:
+    id: UUID
+    external_id: UUID
+
+
+@dataclass
 class InvoiceItem:
     description: str
     amount: float

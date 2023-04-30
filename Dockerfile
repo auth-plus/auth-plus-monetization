@@ -8,3 +8,4 @@ RUN poetry config virtualenvs.create false && poetry install
 
 COPY  . .
 EXPOSE 5004
+EXPOSE 5566
