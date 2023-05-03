@@ -1,9 +1,8 @@
 from abc import ABCMeta, abstractmethod
 from typing import List
 from uuid import UUID
-from src.core.entity.account import Discount
 
-from src.core.entity.billing import InvoiceItem
+from src.core.entity.account import Discount
 
 
 class ReadingDiscount(metaclass=ABCMeta):
