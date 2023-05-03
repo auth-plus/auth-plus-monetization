@@ -105,5 +105,5 @@ On VSCode select the interpreter with poetry
 ### Python not updating because cache folders
 
 ```bash
-find . | grep -E "(/__pycache__$|.pyc$|.pyo$)" | xargs sudo rm -rf
+find . | grep -E "(/__pycache__$|.mypy_cache$|.pytest_cache$|.pyc$|.pyo$)" | xargs sudo rm -rf
 ```

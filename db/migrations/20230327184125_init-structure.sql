@@ -21,6 +21,7 @@ CREATE TABLE IF NOT EXISTS "discount" (
     "reason" VARCHAR(255) NOT NULL,
     "is_enable" BOOLEAN DEFAULT true,
     "amount" REAL NOT NULL,
+    "type" ENUM('percentage', 'absolute') DEFAULT 'absolute',
     "created_at" TIMESTAMP NOT NULL DEFAULT Timezone('utc', Now()),
     PRIMARY KEY ("id"),
     CONSTRAINT fk_d_account_id FOREIGN KEY("account_id") REFERENCES "account"("id")

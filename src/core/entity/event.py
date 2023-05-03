@@ -5,10 +5,12 @@ from enum import Enum
 
 
 class EventType(Enum):
-    SPRING = 1
-    SUMMER = 2
-    AUTUMN = 3
-    WINTER = 4
+    EMAIL_CREATED = "2FA_EMAIL_CREATED"
+    PHONE_CREATED = "2FA_PHONE_CREATED"
+    EMAIL_SENT = "2FA_EMAIL_SENT"
+    PHONE_SENT = "2FA_PHONE_SENT"
+    USER_CREATED = "USER_CREATED"
+    ORGANIZATION_CREATED = "ORGANIZATION_CREATED"
 
 
 @dataclass
@@ -21,13 +23,17 @@ class Event:
 
 def convert_str_to_event_type(type: str) -> EventType:
     match type:
-        case "SPRING":
-            return EventType.SPRING
-        case "SUMMER":
-            return EventType.SUMMER
-        case "AUTUMN":
-            return EventType.AUTUMN
-        case "WINTER":
-            return EventType.WINTER
+        case "2FA_EMAIL_CREATED":
+            return EventType.EMAIL_CREATED
+        case "2FA_PHONE_CREATED":
+            return EventType.PHONE_CREATED
+        case "2FA_EMAIL_SENT":
+            return EventType.EMAIL_SENT
+        case "2FA_PHONE_SENT":
+            return EventType.PHONE_SENT
+        case "USER_CREATED":
+            return EventType.USER_CREATED
+        case "ORGANIZATION_CREATED":
+            return EventType.ORGANIZATION_CREATED
         case other:
             raise Exception(f"No event mapped for this string: {other}")
