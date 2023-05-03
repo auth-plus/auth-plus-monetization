@@ -28,9 +28,9 @@ clean/docker:
 	rm -rf db/schema.sql
 	rm -f db/schema.sql
 
-.PHONY: clean/test
-clean/test:
-	find . | grep -E "(/__pycache__$|\.pyc$|\.pyo$\)" | xargs sudo rm -rf
+.PHONY: clean/cache
+clean/cache:
+	find . | grep -E "(/__pycache__$|\.mypy_cache$|\.pytest_cache$|\.pyc$|\.pyo$\)" | xargs sudo rm -rf
 
 .PHONY: migration/up
 migration/up:
