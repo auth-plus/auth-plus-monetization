@@ -6,7 +6,7 @@ from src.core.usecase.driven.creating_charge import CreatingCharge
 from src.core.usecase.driven.creating_invoice import CreatingInvoice
 from src.core.usecase.driven.creating_transaction import CreatingTransaction
 from src.core.usecase.driven.fetch_billing_user import FetchBillingUser
-from src.core.usecase.pre_paid.receive_credit import ReceiveCredit
+from src.core.usecase.receive_credit import ReceiveCredit
 
 
 class Core:

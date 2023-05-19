@@ -8,5 +8,6 @@ class Transaction:
     id: UUID
     account_id: UUID
     amount: float
-    invoice_id: UUID
+    description: str
+    event_id: UUID
     created_at: datetime

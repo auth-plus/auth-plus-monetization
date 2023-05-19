@@ -10,7 +10,7 @@ class AccountType(Enum):
 
 
 @dataclass
-class Discount:
+class Account:
     id: UUID
     external_id: UUID
     type: AccountType

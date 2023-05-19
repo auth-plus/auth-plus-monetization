@@ -1,4 +1,5 @@
 from abc import ABCMeta, abstractmethod
+
 from src.core.entity.event import Event, EventType
 
 
