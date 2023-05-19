@@ -30,7 +30,8 @@ CREATE TABLE IF NOT EXISTS "ledger" (
     "id" UUID NOT NULL DEFAULT Uuid_generate_v1(),
     "account_id" UUID NOT NULL,
     "amount" REAL NOT NULL,
-    "invoice_id" UUID NOT NULL,
+    "description" VARCHAR(255) NOT NULL,
+    "event_id" UUID NOT NULL,
     "created_at" TIMESTAMP NOT NULL DEFAULT Timezone('utc', Now()),
     PRIMARY KEY ("id"),
     CONSTRAINT fk_l_account_id FOREIGN KEY("account_id") REFERENCES "account"("id")

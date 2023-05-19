@@ -71,6 +71,7 @@ poetry run black src/ -v
 
 # Running lint
 poetry run flake8 src/ -v
+poetry run isort src/
 poetry run mypy src/ -v --check-untyped-defs
 
 # Running test
