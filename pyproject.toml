@@ -12,6 +12,8 @@ flask-wtf = "^1.1.1"
 celery = {extras = ["redis"], version = "^5.2.7"}
 flower = "^1.2.0"
 requests = "^2.29.0"
+sqlalchemy = "^2.0.15"
+psycopg2 = "^2.9.6"
 
 [tool.poetry.group.dev.dependencies]
 black = "^23.1.0"

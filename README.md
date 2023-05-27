@@ -108,3 +108,9 @@ On VSCode select the interpreter with poetry
 ```bash
 find . | grep -E "(/__pycache__$|.mypy_cache$|.pytest_cache$|.pyc$|.pyo$)" | xargs sudo rm -rf
 ```
+
+### Psycopg2 problem when installing
+
+```bash
+sudo apt install python3-dev libpq-dev
+```

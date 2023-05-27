@@ -1,13 +1,15 @@
+import os
 from flask import Flask, request
 from flask_wtf.csrf import CSRFProtect
-
 from src.config.envvar import get_env
+
 from src.core import Core
 
 
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
+    app.config["SECRET_KEY"] = "TEST-MONETIZATION"
     csrf = CSRFProtect()
     csrf.init_app(app)
     app.config.from_mapping()
@@ -19,21 +21,18 @@ def create_app(test_config=None):
         # load the test config if passed in
         app.config.from_mapping(test_config)
 
-    @app.route("/")
-    def hello_world():
-        return "<p>Hello, World!</p>"
-
     @app.route("/health")
     def health():
         return "Ok"
 
-    @app.route("/ledger/receive_credit", methods=["POST"])
-    def receive_credit():
+    @app.route("/account", methods=["POST"])
+    def create_account():
         request_data = request.get_json()
-        account_id = request_data["account_id"]
-        amount = request_data["amount"]
+        print(request_data)
+        external_id = request_data["external_id"]
+        type = request_data["type"]
         core = Core()
-        charge = core.pre_paid.receive_credit.receive_credit(account_id, amount)
+        charge = core.account_create.create(external_id, type)
         return charge
 
     return app
@@ -42,5 +41,6 @@ def create_app(test_config=None):
 if __name__ == "__main__":
     env = get_env()
     app = create_app()
+
     print(env["app"]["port"])
     app.run(debug=True, port=8081)

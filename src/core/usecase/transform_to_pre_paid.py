@@ -1,7 +1,7 @@
 from functools import reduce
 from uuid import UUID
 
-from src.core.entity.account import AccountType
+from src.core.entity.account import Account, AccountType
 from src.core.entity.billing import InvoiceItem
 from src.core.entity.discount import Discount, DiscountType
 from src.core.usecase.driven.creating_charge import CreatingCharge
@@ -30,16 +30,18 @@ class TransformToPrePaid:
         self.creating_invoice = creating_invoice
 
     def transform_to_pre_paid(self, account_id: UUID):
-        total_debit = self._calculate_total_debit(account_id)
-        discount = self.reading_discount.by_account_id(account_id)
-        amount = self._apply_discount(total_debit, discount)
-        self._should_create_invoice(account_id, amount)
-        self.update_account.change_type(account_id, AccountType.PRE_PAID)
-
-    def _calculate_total_debit(self, account_id: UUID):
         account = self.reading_account.by_id(account_id)
+        if account.type is AccountType.POST_PAID:
+            raise Exception("This account already is PostPaid")
+        total_debit = self._calculate_total_debit(account)
+        discount = self.reading_discount.by_account_id(account.id)
+        amount = self._apply_discount(total_debit, discount)
+        self._should_create_invoice(account.id, amount)
+        self.update_account.change_type(account.id, AccountType.PRE_PAID)
+
+    def _calculate_total_debit(self, account: Account):
         transaction_list = self.reading_transaction.by_account_id(
-            account_id, account.created_at
+            account.id, account.created_at
         )
         amount_list = list(map(lambda a: a.amount, transaction_list))
         return reduce(lambda a, b: a + b, amount_list)
