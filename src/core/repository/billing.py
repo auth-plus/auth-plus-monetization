@@ -8,7 +8,7 @@ from src.core.usecase.driven.creating_invoice import CreatingInvoice
 from src.core.usecase.driven.fetch_billing_user import FetchBillingUser
 
 
-class Billing(CreatingCharge, CreatingInvoice, FetchBillingUser):
+class BillingService(CreatingCharge, CreatingInvoice, FetchBillingUser):
     __billing_endpoint = "localhost:5002"
 
     def fetch_by_account_id(self, account_id: UUID) -> BillingUser:

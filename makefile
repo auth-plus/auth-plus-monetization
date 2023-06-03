@@ -15,7 +15,7 @@ dev:
 .PHONY: test
 test:
 	make infra/up
-	docker compose exec -T api pytest
+	docker compose exec -T api coverage run -m pytest
 	make clean/docker
 
 .PHONY: clean/docker

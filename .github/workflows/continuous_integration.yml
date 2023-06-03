@@ -26,15 +26,32 @@ jobs:
         run: poetry audit
   Test:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15.1
+        env:
+          POSTGRES_PASSWORD: db_password
+          POSTGRES_USER: root
+          POSTGRES_DB: monetization
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
     env:
       APP_NAME: auth-plus-monetization
       PORT: 5005
       PYTHON_ENV: test
+      DATABASE_URL: postgresql+psycopg2://root:db_password@localhost:5432/monetization
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
         with:
           python-version: "3.10"
+      - name: Running migrations
+        run: HOST=localhost make migration/up
       - name: Install poetry
         run: python3 -m pip install poetry==${{ env.POETRY_VERSION }}
       - name: Install Dependencies

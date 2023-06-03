@@ -1,28 +1,15 @@
+from fastapi import FastAPI
 import pytest
-from src.presentation.server import create_app
+from fastapi.testclient import TestClient
+from src.presentation.server import app as FastApiApp
 
 
 @pytest.fixture()
-def app():
-    app = create_app()
-    app.config.update(
-        {
-            "TESTING": True,
-        }
-    )
-
-    # other setup can go here
-
-    yield app
-
-    # clean up / reset resources here
+def app() -> FastAPI:
+    yield FastApiApp
 
 
 @pytest.fixture()
-def client(app):
-    return app.test_client()
-
-
-@pytest.fixture()
-def runner(app):
-    return app.test_cli_runner()
+def client(app) -> TestClient:
+    client = TestClient(app)
+    yield client

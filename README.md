@@ -61,7 +61,7 @@ make dev
 poetry install
 
 # Running HTTP server
-poetry run flask --app src/presentation/server run --port $PORT
+poetry run uvicorn src.presentation.server:app --reload
 
 # Running Job scheduled (need to be src/presentation folder to execute this command)
 poetry run celery -A src.presentation.job flower --port=5566
@@ -107,4 +107,10 @@ On VSCode select the interpreter with poetry
 
 ```bash
 find . | grep -E "(/__pycache__$|.mypy_cache$|.pytest_cache$|.pyc$|.pyo$)" | xargs sudo rm -rf
+```
+
+### Psycopg2 problem when installing
+
+```bash
+sudo apt install python3-dev libpq-dev
 ```

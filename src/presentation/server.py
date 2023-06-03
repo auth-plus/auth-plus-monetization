@@ -1,46 +1,26 @@
-from flask import Flask, request
-from flask_wtf.csrf import CSRFProtect
+from uuid import UUID
 
-from src.config.envvar import get_env
+from fastapi import FastAPI
+from pydantic import BaseModel
+
 from src.core import Core
+from src.core.entity.account import AccountType
+
+app = FastAPI()
 
 
-def create_app(test_config=None):
-    # create and configure the app
-    app = Flask(__name__, instance_relative_config=True)
-    csrf = CSRFProtect()
-    csrf.init_app(app)
-    app.config.from_mapping()
-
-    if test_config is None:
-        # load the instance config, if it exists, when not testing
-        app.config.from_pyfile("config.py", silent=True)
-    else:
-        # load the test config if passed in
-        app.config.from_mapping(test_config)
-
-    @app.route("/")
-    def hello_world():
-        return "<p>Hello, World!</p>"
-
-    @app.route("/health")
-    def health():
-        return "Ok"
-
-    @app.route("/ledger/receive_credit", methods=["POST"])
-    def receive_credit():
-        request_data = request.get_json()
-        account_id = request_data["account_id"]
-        amount = request_data["amount"]
-        core = Core()
-        charge = core.pre_paid.receive_credit.receive_credit(account_id, amount)
-        return charge
-
-    return app
+@app.get("/health")
+def health():
+    return {"server": "Ok"}
 
 
-if __name__ == "__main__":
-    env = get_env()
-    app = create_app()
-    print(env["app"]["port"])
-    app.run(debug=True, port=8081)
+class CreateAccountInput(BaseModel):
+    external_id: UUID
+    type: AccountType
+
+
+@app.post("/account")
+def create_account(body: CreateAccountInput):
+    core = Core()
+    charge = core.account_create.create(body.external_id, body.type)
+    return charge
