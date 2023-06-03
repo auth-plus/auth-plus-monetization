@@ -13,6 +13,7 @@ services:
       APP_NAME: auth-plus-monetization
       PORT: 5004
       PYTHON_ENV: development
+      DATABASE_URL: postgresql+psycopg2://root:db_password@database:5432/monetization
     volumes:
       - .:/app
     restart: always
