@@ -61,7 +61,7 @@ make dev
 poetry install
 
 # Running HTTP server
-poetry run flask --app src/presentation/server run --port $PORT
+poetry run uvicorn src.presentation.server:app --reload
 
 # Running Job scheduled (need to be src/presentation folder to execute this command)
 poetry run celery -A src.presentation.job flower --port=5566

@@ -1,3 +1,43 @@
-def test_request_example(client):
-    response = client.get("/health")
-    assert b"Ok" in response.data
+from copy import deepcopy
+from datetime import datetime
+from uuid import UUID, uuid4
+from httpx import Response
+from fastapi.testclient import TestClient
+from sqlalchemy import delete, select
+
+from src.config.database import engine
+from src.core.repository.account import account_table
+
+
+def test_route_health(client: TestClient):
+    response: Response = client.get("/health")
+    assert response.status_code == 200
+    body = response.json()
+    assert body["server"] == "Ok"
+
+
+def test_route_create_account(client: TestClient):
+    # TESTING API
+    external_id = uuid4()
+    response: Response = client.post(
+        "/account", json={"external_id": str(external_id), "type": "PRE_PAID"}
+    )
+    assert response.status_code == 200
+    body = response.json()
+    assert body["external_id"] == str(external_id)
+
+    # TESTING DB
+    with engine.connect() as conn:
+        select_query = (
+            select(account_table).where(account_table.c.id == body["id"]).limit(1)
+        )
+        cursor = conn.execute(select_query)
+        (id, external_id, type, is_enable, created_at) = deepcopy(cursor.first())
+        assert isinstance(id, UUID)
+        assert external_id == external_id
+        assert type == "PRE_PAID"
+        assert is_enable
+        assert isinstance(created_at, datetime)
+        delete_query = delete(account_table).where(account_table.c.id == body["id"])
+        cursor = conn.execute(delete_query)
+        conn.commit()

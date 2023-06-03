@@ -6,6 +6,7 @@ services:
       dockerfile: Dockerfile
       target: dependency
     ports:
+      - '8000:8000'
       - '5004:5004'
     command: tail -f /dev/null
     environment:
@@ -23,11 +24,11 @@ services:
   #     context: .
   #     dockerfile: Dockerfile
   #   ports:
-  #     - '5005:5005'
+  #     - '5566:5566'
   #   command: poetry run celery -A src.presentation.job flower --port=5566
   #   environment:
   #     APP_NAME: auth-plus-monetization
-  #     PORT: 5005
+  #     PORT: 5566
   #     PYTHON_ENV: development
   #   volumes:
   #     - .:/app

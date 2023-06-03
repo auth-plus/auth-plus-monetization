@@ -1,9 +1,10 @@
-from datetime import datetime
 from uuid import UUID
+from copy import deepcopy
 
-from sqlalchemy import UUID as SQLUUID
-from sqlalchemy import Boolean, DateTime, String, select
-from sqlalchemy.orm import Mapped, Session, mapped_column
+from sqlalchemy import insert, select
+from sqlalchemy import Table, Column, Boolean, String, UUID as SQLUUID, TIMESTAMP
+from sqlalchemy import MetaData
+
 
 from src.config.database import engine
 from src.core.entity.account import Account, AccountType
@@ -11,31 +12,38 @@ from src.core.usecase.driven.creating_account import CreatingAccount
 from src.core.usecase.driven.reading_account import ReadingAccount
 from src.core.usecase.driven.update_account import UpdateAccount
 
+metadata_obj = MetaData()
 
-class AccountDao:
-    __tablename__ = "account"
-
-    id: Mapped[int] = mapped_column(primary_key=True)
-    external_id: Mapped[UUID] = mapped_column(SQLUUID())
-    type: Mapped[AccountType] = mapped_column(String(20))
-    is_enable: Mapped[bool] = mapped_column(Boolean())
-    created_at: Mapped[datetime] = mapped_column(DateTime())
+account_table = Table(
+    "account",
+    metadata_obj,
+    Column("id", SQLUUID, nullable=False),
+    Column("external_id", SQLUUID, nullable=False),
+    Column("type", String(20), nullable=False),
+    Column("is_enable", Boolean),
+    Column("created_at", TIMESTAMP),
+)
 
 
 class AccountRepository(CreatingAccount, ReadingAccount, UpdateAccount):
     def create(self, external_id: UUID, type: AccountType) -> Account:
-        with Session(engine) as session:
-            insert_line = AccountDao(external_id=external_id, type=type, is_enable=True)
-            session.add(insert_line)
-            session.flush()
-            return Account(
-                insert_line.id, external_id, type, True, insert_line.created_at
+        with engine.connect() as conn:
+            insert_line = (
+                insert(account_table)
+                .values(external_id=external_id, type=type.name)
+                .returning(account_table.c.id, account_table.c.created_at)
             )
+            cursor = conn.execute(insert_line)
+            (id, created_at) = deepcopy(cursor.first())
+            conn.commit()
+            return Account(id, external_id, type, True, created_at)
 
     def by_id(self, account_id: UUID) -> Account:
-        with Session(engine) as session:
-            row = select(AccountDao).where(AccountDao.id == account_id).limit(1)
-            print(row)
+        with engine.connect() as conn:
+            query = select(account_table).where(id == account_id).limit(1)
+            cursor = conn.execute(query)
+            (id, external_id, type, is_enable, created_at) = deepcopy(cursor.first())
+            return Account(id, external_id, type, is_enable, created_at)
 
     def change_type(self, account_id: UUID, type: AccountType) -> None:
         pass
