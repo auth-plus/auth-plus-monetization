@@ -1,9 +1,10 @@
 from uuid import UUID
+
 from fastapi import FastAPI
 from pydantic import BaseModel
+
 from src.core import Core
 from src.core.entity.account import AccountType
-from src.config.database import engine
 
 app = FastAPI()
 

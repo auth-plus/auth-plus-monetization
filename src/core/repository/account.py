@@ -1,10 +1,10 @@
-from uuid import UUID
 from copy import deepcopy
+from typing import NoReturn
+from uuid import UUID
 
-from sqlalchemy import insert, select
-from sqlalchemy import Table, Column, Boolean, String, UUID as SQLUUID, TIMESTAMP
-from sqlalchemy import MetaData
-
+from sqlalchemy import TIMESTAMP
+from sqlalchemy import UUID as SQLUUID
+from sqlalchemy import Boolean, Column, MetaData, String, Table, insert, select
 
 from src.config.database import engine
 from src.core.entity.account import Account, AccountType
@@ -40,10 +40,12 @@ class AccountRepository(CreatingAccount, ReadingAccount, UpdateAccount):
 
     def by_id(self, account_id: UUID) -> Account:
         with engine.connect() as conn:
-            query = select(account_table).where(id == account_id).limit(1)
+            query = (
+                select(account_table).where(account_table.c.id == account_id).limit(1)
+            )
             cursor = conn.execute(query)
             (id, external_id, type, is_enable, created_at) = deepcopy(cursor.first())
             return Account(id, external_id, type, is_enable, created_at)
 
-    def change_type(self, account_id: UUID, type: AccountType) -> None:
+    def change_type(self, account_id: UUID, type: AccountType) -> NoReturn:
         pass
