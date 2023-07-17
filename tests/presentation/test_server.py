@@ -1,9 +1,11 @@
 from copy import deepcopy
 from datetime import datetime
 from uuid import UUID, uuid4
-from httpx import Response
+
 from fastapi.testclient import TestClient
+from httpx import Response
 from sqlalchemy import delete, select
+from sqlalchemy.orm import Session
 
 from src.config.database import engine
 from src.core.repository.account import account_table
@@ -27,11 +29,11 @@ def test_route_create_account(client: TestClient):
     assert body["external_id"] == str(external_id)
 
     # TESTING DB
-    with engine.connect() as conn:
+    with Session(engine) as session:
         select_query = (
             select(account_table).where(account_table.c.id == body["id"]).limit(1)
         )
-        cursor = conn.execute(select_query)
+        cursor = session.execute(select_query)
         (id, external_id, type, is_enable, created_at) = deepcopy(cursor.first())
         assert isinstance(id, UUID)
         assert external_id == external_id
@@ -39,5 +41,5 @@ def test_route_create_account(client: TestClient):
         assert is_enable
         assert isinstance(created_at, datetime)
         delete_query = delete(account_table).where(account_table.c.id == body["id"])
-        cursor = conn.execute(delete_query)
-        conn.commit()
+        session.execute(delete_query)
+        session.commit()

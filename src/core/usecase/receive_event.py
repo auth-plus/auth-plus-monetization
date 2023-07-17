@@ -9,11 +9,11 @@ from src.core.usecase.driven.reading_event import ReadingEvent
 class ReceiveEvent:
     def __init__(
         self,
-        creating_transaction: CreatingTransaction,
         reading_event: ReadingEvent,
+        creating_transaction: CreatingTransaction,
     ):
-        self.creating_transaction = creating_transaction
         self.reading_event = reading_event
+        self.creating_transaction = creating_transaction
 
     def receive_event(self, account_id: UUID, event_input: str) -> Transaction:
         event_type = convert_str_to_event_type(event_input)

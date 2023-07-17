@@ -3,7 +3,6 @@ from uuid import UUID
 
 from src.core.entity.account import Account, AccountType
 from src.core.usecase.driven.creating_discount import CreatingDiscount
-from src.core.usecase.driven.creating_transaction import CreatingTransaction
 from src.core.usecase.driven.reading_account import ReadingAccount
 from src.core.usecase.driven.reading_transaction import ReadingTransaction
 from src.core.usecase.driven.update_account import UpdateAccount
@@ -14,17 +13,15 @@ class TransformToPostPaid:
 
     def __init__(
         self,
+        reading_account: ReadingAccount,
         reading_transaction: ReadingTransaction,
         creating_discount: CreatingDiscount,
-        creating_transaction: CreatingTransaction,
         update_account: UpdateAccount,
-        reading_account: ReadingAccount,
     ):
+        self.reading_account = reading_account
         self.reading_transaction = reading_transaction
         self.creating_discount = creating_discount
-        self.creating_transaction = creating_transaction
         self.update_account = update_account
-        self.reading_account = reading_account
 
     def transform_to_post_paid(self, account_id: UUID):
         account = self.reading_account.by_id(account_id)
