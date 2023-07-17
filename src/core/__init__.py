@@ -51,7 +51,6 @@ class Core:
         transform_to_post_paid = TransformToPostPaid(
             reading_transaction,
             creating_discount,
-            creating_transaction,
             update_account,
             reading_account,
         )

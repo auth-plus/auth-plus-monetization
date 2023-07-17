@@ -1,6 +1,7 @@
-from fastapi import FastAPI
 import pytest
+from fastapi import FastAPI
 from fastapi.testclient import TestClient
+
 from src.presentation.server import app as FastApiApp
 
 

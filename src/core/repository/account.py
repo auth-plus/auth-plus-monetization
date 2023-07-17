@@ -1,10 +1,20 @@
 from copy import deepcopy
-from typing import NoReturn
 from uuid import UUID
 
-from sqlalchemy import TIMESTAMP
-from sqlalchemy import UUID as SQLUUID
-from sqlalchemy import Boolean, Column, MetaData, String, Table, insert, select
+
+from sqlalchemy.orm import Session
+from sqlalchemy import (
+    TIMESTAMP,
+    Boolean,
+    Column,
+    MetaData,
+    String,
+    Table,
+    insert,
+    select,
+    UUID as SQLUUID,
+    update,
+)
 
 from src.config.database import engine
 from src.core.entity.account import Account, AccountType
@@ -27,25 +37,32 @@ account_table = Table(
 
 class AccountRepository(CreatingAccount, ReadingAccount, UpdateAccount):
     def create(self, external_id: UUID, type: AccountType) -> Account:
-        with engine.connect() as conn:
+        with Session(engine) as session:
             insert_line = (
                 insert(account_table)
                 .values(external_id=external_id, type=type.name)
                 .returning(account_table.c.id, account_table.c.created_at)
             )
-            cursor = conn.execute(insert_line)
+            cursor = session.execute(insert_line)
+            session.commit()
             (id, created_at) = deepcopy(cursor.first())
-            conn.commit()
             return Account(id, external_id, type, True, created_at)
 
     def by_id(self, account_id: UUID) -> Account:
-        with engine.connect() as conn:
+        with Session(engine) as session:
             query = (
                 select(account_table).where(account_table.c.id == account_id).limit(1)
             )
-            cursor = conn.execute(query)
+            cursor = session.execute(query)
             (id, external_id, type, is_enable, created_at) = deepcopy(cursor.first())
             return Account(id, external_id, type, is_enable, created_at)
 
-    def change_type(self, account_id: UUID, type: AccountType) -> NoReturn:
-        pass
+    def change_type(self, account_id: UUID, type: AccountType) -> None:
+        with Session(engine) as session:
+            query = (
+                update(account_table)
+                .values(type=type.name)
+                .where(account_table.c.id == account_id)
+            )
+            session.execute(query)
+            session.commit()

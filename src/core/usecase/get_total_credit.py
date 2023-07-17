@@ -7,10 +7,12 @@ from src.core.usecase.driven.reading_transaction import ReadingTransaction
 
 class GetTotalCredit:
     def __init__(
-        self, reading_transaction: ReadingTransaction, reading_account: ReadingAccount
+        self,
+        reading_account: ReadingAccount,
+        reading_transaction: ReadingTransaction,
     ):
-        self.reading_transaction = reading_transaction
         self.reading_account = reading_account
+        self.reading_transaction = reading_transaction
 
     def get_total_credit(self, account_id: UUID) -> float:
         account = self.reading_account.by_id(account_id)
@@ -18,4 +20,4 @@ class GetTotalCredit:
             account_id, account.created_at
         )
         amount_list = list(map(lambda a: a.amount, transaction_list))
-        return reduce(lambda a, b: a + b, amount_list)
+        return reduce(lambda a, b: a + b, amount_list, 0)
