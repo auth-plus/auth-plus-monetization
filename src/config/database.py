@@ -1,5 +1,5 @@
-import os
-
 from sqlalchemy import create_engine
 
-engine = create_engine(os.environ["DATABASE_URL"], echo=True)
+from src.config.envvar import EnvVars
+
+engine = create_engine(EnvVars.DATABASE_HOST, echo=True)

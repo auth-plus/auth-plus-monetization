@@ -2,6 +2,7 @@ from functools import reduce
 from uuid import UUID
 
 from src.core.entity.account import Account, AccountType
+from src.core.entity.discount import DiscountType
 from src.core.usecase.driven.creating_discount import CreatingDiscount
 from src.core.usecase.driven.reading_account import ReadingAccount
 from src.core.usecase.driven.reading_transaction import ReadingTransaction
@@ -40,7 +41,9 @@ class TransformToPostPaid:
 
     def _should_create_discount(self, account_id: UUID, amount: float):
         if amount > 0:
-            self.creating_discount.create_discount(account_id, self.reason, amount)
+            self.creating_discount.create_discount(
+                account_id, self.reason, amount, DiscountType.ABSOLUTE
+            )
         else:
             if amount < 0:
                 raise Exception(

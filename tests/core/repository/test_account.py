@@ -33,7 +33,7 @@ def test_should_select_by_id():
     with Session(engine) as session:
         insert_line = (
             insert(account_table)
-            .values(external_id=external_id, type=type.name)
+            .values(external_id=external_id, type=type)
             .returning(account_table.c.id, account_table.c.created_at)
         )
         cursor = session.execute(insert_line)
@@ -43,7 +43,7 @@ def test_should_select_by_id():
         result = repository.by_id(id)
         assert result.id == id
         assert result.external_id == external_id
-        assert result.type == type.name
+        assert result.type == type
         assert result.is_enable
         assert result.created_at == created_at
         delete_query = delete(account_table).where(account_table.c.id == id)
@@ -57,7 +57,7 @@ def test_should_update_type():
     with Session(engine) as session:
         insert_line = (
             insert(account_table)
-            .values(external_id=external_id, type=type.name)
+            .values(external_id=external_id, type=type)
             .returning(account_table.c.id, account_table.c.created_at)
         )
         cursor = session.execute(insert_line)
@@ -70,7 +70,7 @@ def test_should_update_type():
         result = deepcopy(cursor.first())
         assert result[0] == id
         assert result[1] == external_id
-        assert result[2] == AccountType.POST_PAID.name
+        assert result[2] == AccountType.POST_PAID
         assert result[3]
         assert result[4] == created_at
         delete_query = delete(account_table).where(account_table.c.id == id)

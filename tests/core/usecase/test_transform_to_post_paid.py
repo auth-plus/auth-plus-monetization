@@ -3,6 +3,7 @@ from unittest.mock import MagicMock
 from uuid import uuid4
 
 from src.core.entity.account import Account, AccountType
+from src.core.entity.discount import DiscountType
 from src.core.entity.transaction import Transaction
 from src.core.repository.account import AccountRepository
 from src.core.repository.discount import DiscountRepository
@@ -14,7 +15,7 @@ from src.core.usecase.driven.update_account import UpdateAccount
 from src.core.usecase.transform_to_post_paid import TransformToPostPaid
 
 
-def test_should_charge_debit():
+def test_should_transform_to_post_paid():
     account_id = uuid4()
     account_created_at = datetime.now()
     account = Account(
@@ -55,7 +56,7 @@ def test_should_charge_debit():
         account_id, account_created_at
     )
     creating_discount.create_discount.assert_called_once_with(
-        account_id, "TransformToPostPaid", 6.0
+        account_id, "TransformToPostPaid", 6.0, DiscountType.ABSOLUTE
     )
     update_account.change_type.assert_called_once_with(
         account_id, AccountType.POST_PAID

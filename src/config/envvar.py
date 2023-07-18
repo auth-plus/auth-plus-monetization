@@ -1,22 +1,12 @@
 import os
-from typing import Optional, TypedDict
+
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
-class AppVars(TypedDict):
-    name: Optional[str]
-    port: Optional[str]
-    environment: Optional[str]
-
-
-class EnvVars(TypedDict):
-    app: AppVars
-
-
-def get_env() -> EnvVars:
-    return {
-        "app": {
-            "name": os.getenv("APP_NAME"),
-            "port": os.getenv("PORT"),
-            "environment": os.getenv("PYTHON_ENV"),
-        }
-    }
+class EnvVars:
+    APP_NAME = os.getenv("APP_NAME")
+    APP_PORT = os.getenv("PORT")
+    APP_ENV = os.getenv("PYTHON_ENV")
+    DATABASE_HOST = os.environ["DATABASE_URL"]

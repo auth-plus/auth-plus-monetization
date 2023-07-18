@@ -37,7 +37,7 @@ def test_route_create_account(client: TestClient):
         (id, external_id, type, is_enable, created_at) = deepcopy(cursor.first())
         assert isinstance(id, UUID)
         assert external_id == external_id
-        assert type == "PRE_PAID"
+        assert type.value == "PRE_PAID"
         assert is_enable
         assert isinstance(created_at, datetime)
         delete_query = delete(account_table).where(account_table.c.id == body["id"])

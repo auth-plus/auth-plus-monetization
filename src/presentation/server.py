@@ -24,3 +24,15 @@ def create_account(body: CreateAccountInput):
     core = Core()
     charge = core.account_create.create(body.external_id, body.type)
     return charge
+
+
+class ReceiveEventInput(BaseModel):
+    account_id: UUID
+    event: str
+
+
+@app.post("/event")
+def receive_event(body: ReceiveEventInput):
+    core = Core()
+    charge = core.receive_event.receive_event(body.account_id, body.event)
+    return charge

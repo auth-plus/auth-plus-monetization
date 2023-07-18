@@ -19,5 +19,7 @@ class ReceiveEvent:
         event_type = convert_str_to_event_type(event_input)
         event = self.reading_event.by_type(event_type)
         debit = -event.value
-        transaction = self.creating_transaction.create_transaction(account_id, debit)
+        transaction = self.creating_transaction.create_transaction(
+            account_id, debit, "event receive", event.id
+        )
         return transaction

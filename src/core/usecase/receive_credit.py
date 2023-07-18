@@ -26,5 +26,7 @@ class ReceiveCredit:
         self.fetch_billing_user.fetch_by_account_id(account_id)
         invoice = self.creating_invoice.create_invoice(account_id, item_list)
         charge = self.creating_charge.create_charge(invoice.id)
-        self.creating_transaction.create_transaction(account_id, amount)
+        self.creating_transaction.create_transaction(
+            account_id, amount, "credit receive", None
+        )
         return charge
