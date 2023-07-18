@@ -6,8 +6,9 @@ services:
       dockerfile: Dockerfile
       target: dependency
     ports:
-      - '8000:8000'
       - '5004:5004'
+      - '5566:5566'
+      - '8000:8000'
     command: tail -f /dev/null
     environment:
       APP_NAME: auth-plus-monetization

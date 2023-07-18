@@ -43,24 +43,24 @@ class Core:
         charge_debit = ChargeDebit(
             reading_transaction, creating_invoice, creating_charge
         )
-        get_total_credit = GetTotalCredit(reading_transaction, reading_account)
+        get_total_credit = GetTotalCredit(reading_account, reading_transaction)
         receive_credit = ReceiveCredit(
             fetch_billing_user, creating_invoice, creating_charge, creating_transaction
         )
-        receive_event = ReceiveEvent(creating_transaction, reading_event)
+        receive_event = ReceiveEvent(reading_event, creating_transaction)
         transform_to_post_paid = TransformToPostPaid(
+            reading_account,
             reading_transaction,
             creating_discount,
             update_account,
-            reading_account,
         )
         transform_to_pre_paid = TransformToPrePaid(
+            reading_account,
             reading_transaction,
+            reading_discount,
+            creating_invoice,
             creating_charge,
             update_account,
-            reading_discount,
-            reading_account,
-            creating_invoice,
         )
 
         self.account_create = account_create

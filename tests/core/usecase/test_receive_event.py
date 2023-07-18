@@ -10,7 +10,7 @@ from src.core.usecase.driven.reading_event import ReadingEvent
 from src.core.usecase.receive_event import ReceiveEvent
 
 
-def test_should_charge_debit():
+def test_should_receive_event():
     account_id = uuid4()
     event_id = uuid4()
     amount = 123.4
@@ -34,4 +34,6 @@ def test_should_charge_debit():
     assert result.amount == -amount
     assert result.event_id == event_id
     reading_event.by_type.assert_called_once_with(event_type)
-    creating_transaction.create_transaction.assert_called_once_with(account_id, -amount)
+    creating_transaction.create_transaction.assert_called_once_with(
+        account_id, -amount, "event receive", event_id
+    )

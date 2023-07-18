@@ -6,5 +6,11 @@ from src.core.entity.transaction import Transaction
 
 class CreatingTransaction(metaclass=ABCMeta):
     @abstractmethod
-    def create_transaction(self, account_id: UUID, amount: float) -> Transaction:
+    def create_transaction(
+        self,
+        account_id: UUID,
+        amount: float,
+        description: str,
+        event_id=None | UUID,
+    ) -> Transaction:
         pass

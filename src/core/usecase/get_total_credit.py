@@ -20,4 +20,4 @@ class GetTotalCredit:
             account_id, account.created_at
         )
         amount_list = list(map(lambda a: a.amount, transaction_list))
-        return reduce(lambda a, b: a + b, amount_list, 0)
+        return reduce(lambda a, b: float(a + b), amount_list, 0.0)

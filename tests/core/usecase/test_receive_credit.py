@@ -13,7 +13,7 @@ from src.core.usecase.driven.fetch_billing_user import FetchBillingUser
 from src.core.usecase.receive_credit import ReceiveCredit
 
 
-def test_should_charge_debit():
+def test_should_receive_credit():
     account_id = uuid4()
     amount = 100.99
     account = Account(account_id, uuid4(), AccountType.PRE_PAID, True, datetime.now())
@@ -46,4 +46,6 @@ def test_should_charge_debit():
         account_id, [InvoiceItem("CREDIT", amount, "BRL", 1.0)]
     )
     creating_charge.create_charge.assert_called_once_with(invoice_id)
-    creating_transaction.create_transaction.assert_called_once_with(account_id, amount)
+    creating_transaction.create_transaction.assert_called_once_with(
+        account_id, amount, "credit receive", None
+    )

@@ -1,20 +1,10 @@
 from copy import deepcopy
 from uuid import UUID
 
-
+from sqlalchemy import TIMESTAMP
+from sqlalchemy import UUID as SQLUUID
+from sqlalchemy import Boolean, Column, Enum, MetaData, Table, insert, select, update
 from sqlalchemy.orm import Session
-from sqlalchemy import (
-    TIMESTAMP,
-    Boolean,
-    Column,
-    MetaData,
-    String,
-    Table,
-    insert,
-    select,
-    UUID as SQLUUID,
-    update,
-)
 
 from src.config.database import engine
 from src.core.entity.account import Account, AccountType
@@ -29,7 +19,7 @@ account_table = Table(
     metadata_obj,
     Column("id", SQLUUID, nullable=False),
     Column("external_id", SQLUUID, nullable=False),
-    Column("type", String(20), nullable=False),
+    Column("type", Enum(AccountType), nullable=False),
     Column("is_enable", Boolean),
     Column("created_at", TIMESTAMP),
 )
@@ -43,9 +33,11 @@ class AccountRepository(CreatingAccount, ReadingAccount, UpdateAccount):
                 .values(external_id=external_id, type=type.name)
                 .returning(account_table.c.id, account_table.c.created_at)
             )
-            cursor = session.execute(insert_line)
+            row = session.execute(insert_line).first()
             session.commit()
-            (id, created_at) = deepcopy(cursor.first())
+            if row is None:
+                raise Exception("somethinf wrong happen")
+            (id, created_at) = deepcopy(row)
             return Account(id, external_id, type, True, created_at)
 
     def by_id(self, account_id: UUID) -> Account:
@@ -53,8 +45,10 @@ class AccountRepository(CreatingAccount, ReadingAccount, UpdateAccount):
             query = (
                 select(account_table).where(account_table.c.id == account_id).limit(1)
             )
-            cursor = session.execute(query)
-            (id, external_id, type, is_enable, created_at) = deepcopy(cursor.first())
+            row = session.execute(query).first()
+            if row is None:
+                raise Exception("account not found")
+            (id, external_id, type, is_enable, created_at) = deepcopy(row)
             return Account(id, external_id, type, is_enable, created_at)
 
     def change_type(self, account_id: UUID, type: AccountType) -> None:

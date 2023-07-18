@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS "discount" (
     "reason" VARCHAR(255) NOT NULL,
     "is_enable" BOOLEAN DEFAULT true,
     "amount" REAL NOT NULL,
-    "type" discount_type DEFAULT 'absolute',
+    "type" discount_type NOT NULL,
     "created_at" TIMESTAMP NOT NULL DEFAULT Timezone('utc', Now()),
     PRIMARY KEY ("id"),
     CONSTRAINT fk_d_account_id FOREIGN KEY("account_id") REFERENCES "account"("id")
@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS "event" (
     "id" UUID NOT NULL DEFAULT Uuid_generate_v1(),
     "type" TEXT NOT NULL,
     "value" NUMERIC(5, 2) NOT NULL,
-    "created_at" TIMESTAMP NOT NULL DEFAULT Timezone('utc', Now()),
+    "created_at" TIMESTAMP DEFAULT Timezone('utc', Now()),
     PRIMARY KEY ("id")
 );
 -- migrate:down

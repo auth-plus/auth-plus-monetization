@@ -18,7 +18,7 @@ from src.core.usecase.driven.update_account import UpdateAccount
 from src.core.usecase.transform_to_pre_paid import TransformToPrePaid
 
 
-def test_should_charge_debit():
+def test_should_transform_to_pre_paid():
     account_id = uuid4()
     account_created_at = datetime.now()
     account = Account(
