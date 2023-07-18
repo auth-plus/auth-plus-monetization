@@ -11,6 +11,6 @@ class AccountCreate:
     ):
         self.creating_account = creating_account
 
-    def create(self, external_id: UUID, type: AccountType) -> Account:
+    def create(self, external_id: UUID, type=AccountType.PRE_PAID) -> Account:
         account = self.creating_account.create(external_id, type)
         return account

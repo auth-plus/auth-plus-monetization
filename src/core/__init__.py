@@ -5,12 +5,11 @@ from src.core.repository.event import EventRepository
 from src.core.repository.ledger import LedgerRepository
 from src.core.usecase.account_create import AccountCreate
 from src.core.usecase.charge_debit import ChargeDebit
+from src.core.usecase.driven.billing.billing_charge import BillingCharge
+from src.core.usecase.driven.billing.billing_fetch_user import BillingFetchUser
 from src.core.usecase.driven.creating_account import CreatingAccount
-from src.core.usecase.driven.creating_charge import CreatingCharge
 from src.core.usecase.driven.creating_discount import CreatingDiscount
-from src.core.usecase.driven.creating_invoice import CreatingInvoice
 from src.core.usecase.driven.creating_transaction import CreatingTransaction
-from src.core.usecase.driven.fetch_billing_user import FetchBillingUser
 from src.core.usecase.driven.reading_account import ReadingAccount
 from src.core.usecase.driven.reading_discount import ReadingDiscount
 from src.core.usecase.driven.reading_event import ReadingEvent
@@ -25,12 +24,11 @@ from src.core.usecase.transform_to_pre_paid import TransformToPrePaid
 
 class Core:
     def __init__(self):
+        billing_charge: BillingCharge = BillingService()
+        billing_fetch_user: BillingFetchUser = BillingService()
         creating_account: CreatingAccount = AccountRepository()
-        creating_charge: CreatingCharge = BillingService()
         creating_discount: CreatingDiscount = DiscountRepository()
-        creating_invoice: CreatingInvoice = BillingService()
         creating_transaction: CreatingTransaction = LedgerRepository()
-        fetch_billing_user: FetchBillingUser = BillingService()
         reading_account: ReadingAccount = AccountRepository()
         reading_discount: ReadingDiscount = DiscountRepository()
         reading_event: ReadingEvent = EventRepository()
@@ -40,14 +38,17 @@ class Core:
         account_create = AccountCreate(
             creating_account,
         )
-        charge_debit = ChargeDebit(
-            reading_transaction, creating_invoice, creating_charge
-        )
+        charge_debit = ChargeDebit(reading_account, reading_transaction, billing_charge)
         get_total_credit = GetTotalCredit(reading_account, reading_transaction)
         receive_credit = ReceiveCredit(
-            fetch_billing_user, creating_invoice, creating_charge, creating_transaction
+            reading_account,
+            billing_fetch_user,
+            billing_charge,
+            creating_transaction,
         )
-        receive_event = ReceiveEvent(reading_event, creating_transaction)
+        receive_event = ReceiveEvent(
+            reading_event, reading_account, creating_transaction
+        )
         transform_to_post_paid = TransformToPostPaid(
             reading_account,
             reading_transaction,
@@ -58,8 +59,7 @@ class Core:
             reading_account,
             reading_transaction,
             reading_discount,
-            creating_invoice,
-            creating_charge,
+            billing_charge,
             update_account,
         )
 

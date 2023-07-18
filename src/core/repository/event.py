@@ -23,8 +23,6 @@ event_table = Table(
 
 class EventRepository(ReadingEvent):
     def by_type(self, type: EventType) -> Event:
-        print(type.value)
-
         with Session(engine) as session:
             query = (
                 select(event_table)

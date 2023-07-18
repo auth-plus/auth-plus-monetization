@@ -17,9 +17,10 @@ from src.core.usecase.transform_to_post_paid import TransformToPostPaid
 
 def test_should_transform_to_post_paid():
     account_id = uuid4()
+    external_id = uuid4()
     account_created_at = datetime.now()
     account = Account(
-        account_id, uuid4(), AccountType.PRE_PAID, True, account_created_at
+        account_id, external_id, AccountType.PRE_PAID, True, account_created_at
     )
     transaction_id = uuid4()
     transaction_1 = Transaction(
@@ -33,7 +34,7 @@ def test_should_transform_to_post_paid():
     )
     # mock
     reading_account: ReadingAccount = AccountRepository()
-    reading_account.by_id = MagicMock(return_value=account)
+    reading_account.by_external_id = MagicMock(return_value=account)
     reading_transaction: ReadingTransaction = LedgerRepository()
     reading_transaction.by_account_id = MagicMock(
         return_value=[transaction_1, transaction_2, transaction_3]
@@ -49,9 +50,9 @@ def test_should_transform_to_post_paid():
         creating_discount,
         update_account,
     )
-    usecase.transform_to_post_paid(account_id)
+    usecase.transform_to_post_paid(external_id)
     # assert
-    reading_account.by_id.assert_called_once_with(account_id)
+    reading_account.by_external_id.assert_called_once_with(external_id)
     reading_transaction.by_account_id.assert_called_once_with(
         account_id, account_created_at
     )

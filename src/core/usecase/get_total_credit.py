@@ -14,10 +14,10 @@ class GetTotalCredit:
         self.reading_account = reading_account
         self.reading_transaction = reading_transaction
 
-    def get_total_credit(self, account_id: UUID) -> float:
-        account = self.reading_account.by_id(account_id)
+    def get_total_credit(self, external_id: UUID) -> float:
+        account = self.reading_account.by_external_id(external_id)
         transaction_list = self.reading_transaction.by_account_id(
-            account_id, account.created_at
+            account.id, account.created_at
         )
         amount_list = list(map(lambda a: a.amount, transaction_list))
         return reduce(lambda a, b: float(a + b), amount_list, 0.0)
