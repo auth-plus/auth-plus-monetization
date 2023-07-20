@@ -8,3 +8,7 @@ class ReadingAccount(metaclass=ABCMeta):
     @abstractmethod
     def by_id(self, account_id: UUID) -> Account:
         pass
+
+    @abstractmethod
+    def by_external_id(self, external_id: UUID) -> Account:
+        pass

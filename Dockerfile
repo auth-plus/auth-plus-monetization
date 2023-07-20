@@ -1,4 +1,4 @@
-FROM python:3.10.6-alpine AS dependency
+FROM python:3.10.6-alpine
 WORKDIR /app
 
 COPY ./pyproject.toml ./poetry.lock ./

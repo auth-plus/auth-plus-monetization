@@ -51,6 +51,19 @@ class AccountRepository(CreatingAccount, ReadingAccount, UpdateAccount):
             (id, external_id, type, is_enable, created_at) = deepcopy(row)
             return Account(id, external_id, type, is_enable, created_at)
 
+    def by_external_id(self, external_id: UUID) -> Account:
+        with Session(engine) as session:
+            query = (
+                select(account_table)
+                .where(account_table.c.external_id == external_id)
+                .limit(1)
+            )
+            row = session.execute(query).first()
+            if row is None:
+                raise Exception("account not found")
+            (id, external_id, type, is_enable, created_at) = deepcopy(row)
+            return Account(id, external_id, type, is_enable, created_at)
+
     def change_type(self, account_id: UUID, type: AccountType) -> None:
         with Session(engine) as session:
             query = (

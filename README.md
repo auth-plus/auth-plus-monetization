@@ -64,7 +64,7 @@ poetry install
 poetry run uvicorn src.presentation.server:app --reload
 
 # Running Job scheduled (need to be src/presentation folder to execute this command)
-poetry run celery -A src.presentation.job flower --port=5566
+poetry run celery -A src.config.worker flower --port=5566
 
 # Running formatter
 poetry run black src/ -v

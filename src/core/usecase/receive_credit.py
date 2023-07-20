@@ -1,32 +1,32 @@
 from uuid import UUID
 
 from src.core.entity.billing import InvoiceItem
-from src.core.usecase.driven.creating_charge import CreatingCharge
-from src.core.usecase.driven.creating_invoice import CreatingInvoice
+from src.core.usecase.driven.billing.billing_charge import BillingCharge
+from src.core.usecase.driven.billing.billing_fetch_user import BillingFetchUser
 from src.core.usecase.driven.creating_transaction import CreatingTransaction
-from src.core.usecase.driven.fetch_billing_user import FetchBillingUser
+from src.core.usecase.driven.reading_account import ReadingAccount
 
 
 class ReceiveCredit:
     def __init__(
         self,
-        fetch_billing_user: FetchBillingUser,
-        creating_invoice: CreatingInvoice,
-        creating_charge: CreatingCharge,
+        reading_account: ReadingAccount,
+        billing_fetch_user: BillingFetchUser,
+        billing_charge: BillingCharge,
         creating_transaction: CreatingTransaction,
     ):
-        self.fetch_billing_user = fetch_billing_user
-        self.creating_invoice = creating_invoice
-        self.creating_charge = creating_charge
+        self.reading_account = reading_account
+        self.billing_fetch_user = billing_fetch_user
+        self.billing_charge = billing_charge
         self.creating_transaction = creating_transaction
 
-    def receive_credit(self, account_id: UUID, amount: float):
+    def receive_credit(self, external_id: UUID, amount: float):
+        account = self.reading_account.by_external_id(external_id)
         credit = InvoiceItem("CREDIT", amount, "BRL", 1.0)
         item_list = [credit]
-        self.fetch_billing_user.fetch_by_account_id(account_id)
-        invoice = self.creating_invoice.create_invoice(account_id, item_list)
-        charge = self.creating_charge.create_charge(invoice.id)
-        self.creating_transaction.create_transaction(
-            account_id, amount, "credit receive", None
+        self.billing_fetch_user.fetch_by_account_id(external_id)
+        self.billing_charge.charge(external_id, item_list)
+        transaction = self.creating_transaction.create_transaction(
+            account.id, amount, "credit receive", None
         )
-        return charge
+        return transaction
