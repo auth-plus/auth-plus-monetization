@@ -56,6 +56,8 @@ class DiscountRepository(CreatingDiscount, ReadingDiscount):
         )
         row = self.session.execute(insert_line).first()
         self.session.commit()
+        if row is None:
+            raise SystemError("Something on database did not return")
         (id_, is_enable, created_at) = deepcopy(row)
         return Discount(id_, account_id, reason, amount, type_, is_enable, created_at)
 

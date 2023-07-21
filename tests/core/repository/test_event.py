@@ -1,4 +1,5 @@
 from decimal import Decimal
+
 from sqlalchemy.orm import Session
 
 from src.core.entity.event import EventType

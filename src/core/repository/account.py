@@ -39,6 +39,8 @@ class AccountRepository(CreatingAccount, ReadingAccount, UpdateAccount):
         )
         row = self.session.execute(insert_line).first()
         self.session.commit()
+        if row is None:
+            raise SystemError("Something on database did not return")
         (id_, created_at) = deepcopy(row)
         return Account(id_, external_id, type_, True, created_at)
 
