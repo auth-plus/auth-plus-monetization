@@ -6,5 +6,5 @@ from src.core.entity.account import Account, AccountType
 
 class CreatingAccount(metaclass=ABCMeta):
     @abstractmethod
-    def create(self, external_id: UUID, type: AccountType) -> Account:
+    def create(self, external_id: UUID, type_: AccountType) -> Account:
         pass

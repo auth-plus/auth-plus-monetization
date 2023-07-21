@@ -21,8 +21,8 @@ class Event:
     created_at: datetime
 
 
-def convert_str_to_event_type(type: str) -> EventType:
-    match type:
+def convert_str_to_event_type(type_: str) -> EventType:
+    match type_:
         case "2FA_EMAIL_CREATED":
             return EventType.EMAIL_CREATED
         case "2FA_PHONE_CREATED":

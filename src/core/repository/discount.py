@@ -74,5 +74,5 @@ class DiscountRepository(CreatingDiscount, ReadingDiscount):
         row = self.session.execute(query).first()
         if row is None:
             raise DiscountNotFoundException("discount not found")
-        (id_, account_id, reason, is_enable, amount, type, created_at) = deepcopy(row)
-        return Discount(id_, account_id, reason, amount, type, is_enable, created_at)
+        (id_, account_id, reason, is_enable, amount, type_, created_at) = deepcopy(row)
+        return Discount(id_, account_id, reason, amount, type_, is_enable, created_at)

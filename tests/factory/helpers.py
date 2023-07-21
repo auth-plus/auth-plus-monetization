@@ -28,8 +28,8 @@ def create_account(session: Session, external_id: UUID, type_: AccountType):
     return Account(id_, external_id, type_, True, created_at)
 
 
-def delete_account(session: Session, id: UUID):
-    delete_query = delete(account_table).where(account_table.c.id == id)
+def delete_account(session: Session, id_: UUID):
+    delete_query = delete(account_table).where(account_table.c.id == id_)
     session.execute(delete_query)
     session.commit()
 
@@ -51,8 +51,8 @@ def create_discount(
     return Discount(id_, account_id, reason, amount, type_, is_enable, created_at)
 
 
-def delete_discount(session: Session, id: UUID):
-    delete_query = delete(discount_table).where(discount_table.c.id == id)
+def delete_discount(session: Session, id_: UUID):
+    delete_query = delete(discount_table).where(discount_table.c.id == id_)
     session.execute(delete_query)
     session.commit()
 
@@ -70,8 +70,8 @@ def create_event(session: Session, type_: EventType, price: float):
     return Event(id_, type_, price, created_at)
 
 
-def delete_event(session: Session, id: UUID):
-    delete_query = delete(event_table).where(event_table.c.id == id)
+def delete_event(session: Session, id_: UUID):
+    delete_query = delete(event_table).where(event_table.c.id == id_)
     session.execute(delete_query)
     session.commit()
 
@@ -96,7 +96,7 @@ def create_transaction(
     return Transaction(id_, account_id, amount, description, event_id, created_at)
 
 
-def delete_transaction(session: Session, id: UUID):
-    delete_query = delete(ledger_table).where(ledger_table.c.id == id)
+def delete_transaction(session: Session, id_: UUID):
+    delete_query = delete(ledger_table).where(ledger_table.c.id == id_)
     session.execute(delete_query)
     session.commit()
