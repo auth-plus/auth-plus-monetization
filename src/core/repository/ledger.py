@@ -45,8 +45,8 @@ class LedgerRepository(CreatingTransaction, ReadingTransaction):
         )
         row = self.session.execute(insert_line).first()
         self.session.commit()
-        (id, created_at) = deepcopy(row)
-        return Transaction(id, account_id, amount, description, event_id, created_at)
+        (id_, created_at) = deepcopy(row)
+        return Transaction(id_, account_id, amount, description, event_id, created_at)
 
     def by_account_id(
         self, account_id: UUID, date_start: datetime, date_end=datetime.now()

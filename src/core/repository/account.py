@@ -31,24 +31,24 @@ class AccountRepository(CreatingAccount, ReadingAccount, UpdateAccount):
     def __init__(self, session: Session):
         self.session = session
 
-    def create(self, external_id: UUID, type: AccountType) -> Account:
+    def create(self, external_id: UUID, type_: AccountType) -> Account:
         insert_line = (
             insert(account_table)
-            .values(external_id=external_id, type=type.name)
+            .values(external_id=external_id, type=type_)
             .returning(account_table.c.id, account_table.c.created_at)
         )
         row = self.session.execute(insert_line).first()
         self.session.commit()
-        (id, created_at) = deepcopy(row)
-        return Account(id, external_id, type, True, created_at)
+        (id_, created_at) = deepcopy(row)
+        return Account(id_, external_id, type_, True, created_at)
 
     def by_id(self, account_id: UUID) -> Account:
         query = select(account_table).where(account_table.c.id == account_id).limit(1)
         row = self.session.execute(query).first()
         if row is None:
             raise AccountNotFoundException("account not found")
-        (id, external_id, type, is_enable, created_at) = deepcopy(row)
-        return Account(id, external_id, type, is_enable, created_at)
+        (id_, external_id, type, is_enable, created_at) = deepcopy(row)
+        return Account(id_, external_id, type, is_enable, created_at)
 
     def by_external_id(self, external_id: UUID) -> Account:
         query = (
@@ -59,13 +59,13 @@ class AccountRepository(CreatingAccount, ReadingAccount, UpdateAccount):
         row = self.session.execute(query).first()
         if row is None:
             raise AccountNotFoundException("account not found")
-        (id, external_id, type, is_enable, created_at) = deepcopy(row)
-        return Account(id, external_id, type, is_enable, created_at)
+        (id_, external_id, type, is_enable, created_at) = deepcopy(row)
+        return Account(id_, external_id, type, is_enable, created_at)
 
-    def change_type(self, account_id: UUID, type: AccountType) -> None:
+    def change_type(self, account_id: UUID, type_: AccountType) -> None:
         query = (
             update(account_table)
-            .values(type=type.name)
+            .values(type=type_)
             .where(account_table.c.id == account_id)
         )
         self.session.execute(query)

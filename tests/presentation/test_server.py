@@ -34,8 +34,8 @@ def test_route_create_account(client: TestClient):
             select(account_table).where(account_table.c.id == body["id"]).limit(1)
         )
         cursor = session.execute(select_query)
-        (id, external_id, type, is_enable, created_at) = deepcopy(cursor.first())
-        assert isinstance(id, UUID)
+        (id_, external_id, type, is_enable, created_at) = deepcopy(cursor.first())
+        assert isinstance(id_, UUID)
         assert external_id == external_id
         assert type.value == "PRE_PAID"
         assert is_enable

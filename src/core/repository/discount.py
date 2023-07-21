@@ -43,11 +43,11 @@ class DiscountRepository(CreatingDiscount, ReadingDiscount):
         self.session = session
 
     def create_discount(
-        self, account_id: UUID, reason: str, amount: float, type: DiscountType
+        self, account_id: UUID, reason: str, amount: float, type_: DiscountType
     ) -> Discount:
         insert_line = (
             insert(discount_table)
-            .values(account_id=account_id, reason=reason, amount=amount, type=type)
+            .values(account_id=account_id, reason=reason, amount=amount, type=type_)
             .returning(
                 discount_table.c.id,
                 discount_table.c.is_enable,
@@ -56,8 +56,8 @@ class DiscountRepository(CreatingDiscount, ReadingDiscount):
         )
         row = self.session.execute(insert_line).first()
         self.session.commit()
-        (id, is_enable, created_at) = deepcopy(row)
-        return Discount(id, account_id, reason, amount, type, is_enable, created_at)
+        (id_, is_enable, created_at) = deepcopy(row)
+        return Discount(id_, account_id, reason, amount, type_, is_enable, created_at)
 
     def by_account_id(self, account_id: UUID) -> Discount:
         query = (
@@ -72,5 +72,5 @@ class DiscountRepository(CreatingDiscount, ReadingDiscount):
         row = self.session.execute(query).first()
         if row is None:
             raise DiscountNotFoundException("discount not found")
-        (id, account_id, reason, is_enable, amount, type, created_at) = deepcopy(row)
-        return Discount(id, account_id, reason, amount, type, is_enable, created_at)
+        (id_, account_id, reason, is_enable, amount, type, created_at) = deepcopy(row)
+        return Discount(id_, account_id, reason, amount, type, is_enable, created_at)
