@@ -57,8 +57,10 @@ def test_should_update_type(session: Session):
     select_query = (
         select(account_table).where(account_table.c.id == account.id).limit(1)
     )
-    cursor = session.execute(select_query)
-    result = deepcopy(cursor.first())
+    cursor = session.execute(select_query).first()
+    if cursor is None:
+        raise SystemError("test: test_should_update_type something went wrong")
+    result = deepcopy(cursor)
     assert result[0] == account.id
     assert result[1] == account.external_id
     assert result[2] == AccountType.POST_PAID

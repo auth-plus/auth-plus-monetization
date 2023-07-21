@@ -15,4 +15,3 @@ EXPOSE 8000
 
 # For production/staging
 EXPOSE 5004
-EXPOSE 5566

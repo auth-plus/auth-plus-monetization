@@ -22,8 +22,10 @@ def create_account(session: Session, external_id: UUID, type_: AccountType):
         .values(external_id=external_id, type=type_)
         .returning(account_table.c.id, account_table.c.created_at)
     )
-    cursor = session.execute(insert_line)
-    (id_, created_at) = deepcopy(cursor.first())
+    cursor = session.execute(insert_line).first()
+    if cursor is None:
+        raise SystemError("test: create_account something went wrong")
+    (id_, created_at) = deepcopy(cursor)
     session.commit()
     return Account(id_, external_id, type_, True, created_at)
 
@@ -45,8 +47,10 @@ def create_discount(
             discount_table.c.id, discount_table.c.is_enable, discount_table.c.created_at
         )
     )
-    cursor = session.execute(insert_line)
-    (id_, is_enable, created_at) = deepcopy(cursor.first())
+    cursor = session.execute(insert_line).first()
+    if cursor is None:
+        raise SystemError("test: create_discount something went wrong")
+    (id_, is_enable, created_at) = deepcopy(cursor)
     session.commit()
     return Discount(id_, account_id, reason, amount, type_, is_enable, created_at)
 
@@ -64,8 +68,10 @@ def create_event(session: Session, type_: EventType, price: float):
         .values(type=type_, price=Decimal(price))
         .returning(event_table.c.id, event_table.c.created_at)
     )
-    cursor = session.execute(insert_line)
-    (id_, created_at) = deepcopy(cursor.first())
+    cursor = session.execute(insert_line).first()
+    if cursor is None:
+        raise SystemError("test: create_event something went wrong")
+    (id_, created_at) = deepcopy(cursor)
     session.commit()
     return Event(id_, type_, price, created_at)
 
@@ -90,8 +96,10 @@ def create_transaction(
         )
         .returning(ledger_table.c.id, ledger_table.c.created_at)
     )
-    cursor = session.execute(insert_line)
-    (id_, created_at) = deepcopy(cursor.first())
+    cursor = session.execute(insert_line).first()
+    if cursor is None:
+        raise SystemError("test: create_transaction something went wrong")
+    (id_, created_at) = deepcopy(cursor)
     session.commit()
     return Transaction(id_, account_id, amount, description, event_id, created_at)
 

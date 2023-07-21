@@ -33,8 +33,10 @@ def test_route_create_account(client: TestClient):
         select_query = (
             select(account_table).where(account_table.c.id == body["id"]).limit(1)
         )
-        cursor = session.execute(select_query)
-        (id_, external_id, type_, is_enable, created_at) = deepcopy(cursor.first())
+        cursor = session.execute(select_query).first()
+        if cursor is None:
+            raise SystemError("test: test_route_create_account something went wrong")
+        (id_, external_id, type_, is_enable, created_at) = deepcopy(cursor)
         assert isinstance(id_, UUID)
         assert external_id == external_id
         assert type_.value == "PRE_PAID"

@@ -23,7 +23,7 @@ def test_should_receive_event(session: Session):
     )
     event_id = uuid4()
     amount = 123.4
-    event_type = EventType.EMAIL_CREATED
+    event_type = EventType.PHONE_AUTH_FACTOR_SENT
     event = Event(event_id, event_type, amount, datetime.now())
     transaction_id = uuid4()
     transaction = Transaction(
@@ -38,7 +38,7 @@ def test_should_receive_event(session: Session):
     creating_transaction.create_transaction = MagicMock(return_value=transaction)
     # usecase
     usecase = ReceiveEvent(reading_event, reading_account, creating_transaction)
-    result = usecase.receive_event(external_id, "2FA_EMAIL_CREATED")
+    result = usecase.receive_event(external_id, "PHONE_AUTH_FACTOR_SENT")
     # assert
     assert result.id == transaction_id
     assert result.account_id == account_id

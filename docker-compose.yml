@@ -13,6 +13,8 @@ services:
       PORT: 5004
       PYTHON_ENV: development
       DATABASE_URL: postgresql+psycopg2://root:db_password@database:5432/monetization
+      REDIS_URL: cache
+      KAFKA_URL: localhost:9092
     volumes:
       - .:/app
     restart: always
@@ -23,13 +25,13 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    ports:
-      - '5566:5566'
-    command: poetry run celery -A src.config.worker flower --port=5566
+    command: poetry run huey_consumer.py src.presentation.worker.huey -k greenlet -w 4
     environment:
       APP_NAME: auth-plus-monetization
-      PORT: 5566
       PYTHON_ENV: development
+      DATABASE_URL: postgresql+psycopg2://root:db_password@database:5432/monetization
+      REDIS_URL: cache
+      KAFKA_URL: localhost:9092
     volumes:
       - .:/app
     restart: always
