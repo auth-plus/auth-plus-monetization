@@ -2,6 +2,8 @@ from datetime import datetime
 from unittest.mock import MagicMock
 from uuid import uuid4
 
+from sqlalchemy.orm import Session
+
 from src.core.entity.account import Account, AccountType
 from src.core.entity.event import Event, EventType
 from src.core.entity.transaction import Transaction
@@ -13,7 +15,7 @@ from src.core.usecase.driven.reading_event import ReadingEvent
 from src.core.usecase.receive_event import ReceiveEvent
 
 
-def test_should_receive_event():
+def test_should_receive_event(session: Session):
     account_id = uuid4()
     external_id = uuid4()
     account = Account(
@@ -30,7 +32,7 @@ def test_should_receive_event():
     # mock
     reading_event: ReadingEvent = BillingService()
     reading_event.by_type = MagicMock(return_value=event)
-    reading_account: ReadingAccount = LedgerRepository()
+    reading_account: ReadingAccount = LedgerRepository(session)
     reading_account.by_external_id = MagicMock(return_value=account)
     creating_transaction: CreatingTransaction = BillingService()
     creating_transaction.create_transaction = MagicMock(return_value=transaction)

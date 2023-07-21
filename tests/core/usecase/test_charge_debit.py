@@ -2,6 +2,8 @@ from datetime import datetime, timedelta
 from unittest.mock import MagicMock
 from uuid import uuid4
 
+from sqlalchemy.orm import Session
+
 from src.core.entity.account import Account, AccountType
 from src.core.entity.billing import InvoiceItem
 from src.core.entity.transaction import Transaction
@@ -12,7 +14,7 @@ from src.core.usecase.driven.reading_account import ReadingAccount
 from src.core.usecase.driven.reading_transaction import ReadingTransaction
 
 
-def test_should_charge_debit():
+def test_should_charge_debit(session: Session):
     account_id = uuid4()
     external_id = uuid4()
     account = Account(
@@ -33,11 +35,11 @@ def test_should_charge_debit():
         )
     )
     # mock
-    reading_account: ReadingAccount = LedgerRepository()
+    reading_account: ReadingAccount = LedgerRepository(session)
     reading_account.by_external_id = MagicMock(return_value=account)
-    reading_transaction: ReadingTransaction = LedgerRepository()
+    reading_transaction: ReadingTransaction = LedgerRepository(session)
     reading_transaction.by_account_id = MagicMock(return_value=transaction_list)
-    billing_charge: BillingCharge = LedgerRepository()
+    billing_charge: BillingCharge = LedgerRepository(session)
     billing_charge.charge = MagicMock(return_value=None)
     # usecase
     usecase = ChargeDebit(reading_account, reading_transaction, billing_charge)

@@ -2,6 +2,8 @@ from datetime import datetime
 from unittest.mock import MagicMock
 from uuid import uuid4
 
+from sqlalchemy.orm import Session
+
 from src.core.entity.account import Account, AccountType
 from src.core.entity.discount import DiscountType
 from src.core.entity.transaction import Transaction
@@ -15,7 +17,7 @@ from src.core.usecase.driven.update_account import UpdateAccount
 from src.core.usecase.transform_to_post_paid import TransformToPostPaid
 
 
-def test_should_transform_to_post_paid():
+def test_should_transform_to_post_paid(session: Session):
     account_id = uuid4()
     external_id = uuid4()
     account_created_at = datetime.now()
@@ -33,15 +35,15 @@ def test_should_transform_to_post_paid():
         transaction_id, account_id, 3.0, "descrip", uuid4(), datetime.today()
     )
     # mock
-    reading_account: ReadingAccount = AccountRepository()
+    reading_account: ReadingAccount = AccountRepository(session)
     reading_account.by_external_id = MagicMock(return_value=account)
-    reading_transaction: ReadingTransaction = LedgerRepository()
+    reading_transaction: ReadingTransaction = LedgerRepository(session)
     reading_transaction.by_account_id = MagicMock(
         return_value=[transaction_1, transaction_2, transaction_3]
     )
-    creating_discount: CreatingDiscount = DiscountRepository()
+    creating_discount: CreatingDiscount = DiscountRepository(session)
     creating_discount.create_discount = MagicMock(return_value=None)
-    update_account: UpdateAccount = AccountRepository()
+    update_account: UpdateAccount = AccountRepository(session)
     update_account.change_type = MagicMock(return_value=None)
     # usecase
     usecase = TransformToPostPaid(
