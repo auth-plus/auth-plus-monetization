@@ -18,7 +18,10 @@ from sqlalchemy.orm import Session
 
 from src.core.entity.discount import Discount, DiscountType
 from src.core.usecase.driven.creating_discount import CreatingDiscount
-from src.core.usecase.driven.reading_discount import ReadingDiscount
+from src.core.usecase.driven.reading_discount import (
+    DiscountNotFoundException,
+    ReadingDiscount,
+)
 
 metadata_obj = MetaData()
 
@@ -53,8 +56,6 @@ class DiscountRepository(CreatingDiscount, ReadingDiscount):
         )
         row = self.session.execute(insert_line).first()
         self.session.commit()
-        if row is None:
-            raise Exception("somethin wrong happen when inserting")
         (id, is_enable, created_at) = deepcopy(row)
         return Discount(id, account_id, reason, amount, type, is_enable, created_at)
 
@@ -70,6 +71,6 @@ class DiscountRepository(CreatingDiscount, ReadingDiscount):
         )
         row = self.session.execute(query).first()
         if row is None:
-            raise Exception("discount not found")
+            raise DiscountNotFoundException("discount not found")
         (id, account_id, reason, is_enable, amount, type, created_at) = deepcopy(row)
         return Discount(id, account_id, reason, amount, type, is_enable, created_at)

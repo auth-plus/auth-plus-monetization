@@ -8,7 +8,10 @@ from sqlalchemy.orm import Session
 
 from src.core.entity.account import Account, AccountType
 from src.core.usecase.driven.creating_account import CreatingAccount
-from src.core.usecase.driven.reading_account import ReadingAccount
+from src.core.usecase.driven.reading_account import (
+    AccountNotFoundException,
+    ReadingAccount,
+)
 from src.core.usecase.driven.update_account import UpdateAccount
 
 metadata_obj = MetaData()
@@ -36,8 +39,6 @@ class AccountRepository(CreatingAccount, ReadingAccount, UpdateAccount):
         )
         row = self.session.execute(insert_line).first()
         self.session.commit()
-        if row is None:
-            raise Exception("somethinf wrong happen")
         (id, created_at) = deepcopy(row)
         return Account(id, external_id, type, True, created_at)
 
@@ -45,7 +46,7 @@ class AccountRepository(CreatingAccount, ReadingAccount, UpdateAccount):
         query = select(account_table).where(account_table.c.id == account_id).limit(1)
         row = self.session.execute(query).first()
         if row is None:
-            raise Exception("account not found")
+            raise AccountNotFoundException("account not found")
         (id, external_id, type, is_enable, created_at) = deepcopy(row)
         return Account(id, external_id, type, is_enable, created_at)
 
@@ -57,7 +58,7 @@ class AccountRepository(CreatingAccount, ReadingAccount, UpdateAccount):
         )
         row = self.session.execute(query).first()
         if row is None:
-            raise Exception("account not found")
+            raise AccountNotFoundException("account not found")
         (id, external_id, type, is_enable, created_at) = deepcopy(row)
         return Account(id, external_id, type, is_enable, created_at)
 

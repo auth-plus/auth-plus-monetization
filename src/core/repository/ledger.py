@@ -45,8 +45,6 @@ class LedgerRepository(CreatingTransaction, ReadingTransaction):
         )
         row = self.session.execute(insert_line).first()
         self.session.commit()
-        if row is None:
-            raise Exception("something wrong happen")
         (id, created_at) = deepcopy(row)
         return Transaction(id, account_id, amount, description, event_id, created_at)
 

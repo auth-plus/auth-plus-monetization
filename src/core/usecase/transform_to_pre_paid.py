@@ -29,7 +29,7 @@ class TransformToPrePaid:
     def transform_to_pre_paid(self, external_id: UUID):
         account = self.reading_account.by_external_id(external_id)
         if account.type is AccountType.POST_PAID:
-            raise Exception("This account already is PostPaid")
+            raise SystemError("This account already is PostPaid")
         total_debit = self._calculate_total_debit(account)
         discount = self.reading_discount.by_account_id(account.id)
         amount = self._apply_discount(total_debit, discount)
@@ -55,6 +55,6 @@ class TransformToPrePaid:
             self.billing_charge_debit.charge(external_id, [item])
         else:
             if amount > 0:
-                raise Exception(
+                raise SystemError(
                     "PostPaid Account should not have credit, only debit or 0"
                 )

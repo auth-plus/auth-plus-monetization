@@ -6,7 +6,7 @@ from sqlalchemy import Column, Enum, MetaData, Numeric, Table, select
 from sqlalchemy.orm import Session
 
 from src.core.entity.event import Event, EventType
-from src.core.usecase.driven.reading_event import ReadingEvent
+from src.core.usecase.driven.reading_event import EventNotFoundException, ReadingEvent
 
 metadata_obj = MetaData()
 
@@ -33,6 +33,6 @@ class EventRepository(ReadingEvent):
         )
         cursor = self.session.execute(query).first()
         if cursor is None:
-            raise Exception("event not found")
+            raise EventNotFoundException("event not found")
         (id, type, price, created_at) = deepcopy(cursor)
         return Event(id, type, price, created_at)
