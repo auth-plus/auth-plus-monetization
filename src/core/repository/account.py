@@ -26,50 +26,47 @@ account_table = Table(
 
 
 class AccountRepository(CreatingAccount, ReadingAccount, UpdateAccount):
+    def __init__(self, session: Session):
+        self.session = session
+
     def create(self, external_id: UUID, type: AccountType) -> Account:
-        with Session(engine) as session:
-            insert_line = (
-                insert(account_table)
-                .values(external_id=external_id, type=type.name)
-                .returning(account_table.c.id, account_table.c.created_at)
-            )
-            row = session.execute(insert_line).first()
-            session.commit()
-            if row is None:
-                raise Exception("somethinf wrong happen")
-            (id, created_at) = deepcopy(row)
-            return Account(id, external_id, type, True, created_at)
+        insert_line = (
+            insert(account_table)
+            .values(external_id=external_id, type=type.name)
+            .returning(account_table.c.id, account_table.c.created_at)
+        )
+        row = self.session.execute(insert_line).first()
+        self.session.commit()
+        if row is None:
+            raise Exception("somethinf wrong happen")
+        (id, created_at) = deepcopy(row)
+        return Account(id, external_id, type, True, created_at)
 
     def by_id(self, account_id: UUID) -> Account:
-        with Session(engine) as session:
-            query = (
-                select(account_table).where(account_table.c.id == account_id).limit(1)
-            )
-            row = session.execute(query).first()
-            if row is None:
-                raise Exception("account not found")
-            (id, external_id, type, is_enable, created_at) = deepcopy(row)
-            return Account(id, external_id, type, is_enable, created_at)
+        query = select(account_table).where(account_table.c.id == account_id).limit(1)
+        row = self.session.execute(query).first()
+        if row is None:
+            raise Exception("account not found")
+        (id, external_id, type, is_enable, created_at) = deepcopy(row)
+        return Account(id, external_id, type, is_enable, created_at)
 
     def by_external_id(self, external_id: UUID) -> Account:
-        with Session(engine) as session:
-            query = (
-                select(account_table)
-                .where(account_table.c.external_id == external_id)
-                .limit(1)
-            )
-            row = session.execute(query).first()
-            if row is None:
-                raise Exception("account not found")
-            (id, external_id, type, is_enable, created_at) = deepcopy(row)
-            return Account(id, external_id, type, is_enable, created_at)
+        query = (
+            select(account_table)
+            .where(account_table.c.external_id == external_id)
+            .limit(1)
+        )
+        row = self.session.execute(query).first()
+        if row is None:
+            raise Exception("account not found")
+        (id, external_id, type, is_enable, created_at) = deepcopy(row)
+        return Account(id, external_id, type, is_enable, created_at)
 
     def change_type(self, account_id: UUID, type: AccountType) -> None:
-        with Session(engine) as session:
-            query = (
-                update(account_table)
-                .values(type=type.name)
-                .where(account_table.c.id == account_id)
-            )
-            session.execute(query)
-            session.commit()
+        query = (
+            update(account_table)
+            .values(type=type.name)
+            .where(account_table.c.id == account_id)
+        )
+        self.session.execute(query)
+        self.session.commit()

@@ -9,9 +9,10 @@ from src.core.repository.ledger import LedgerRepository
 from src.core.usecase.driven.reading_account import ReadingAccount
 from src.core.usecase.driven.reading_transaction import ReadingTransaction
 from src.core.usecase.get_total_credit import GetTotalCredit
+from sqlalchemy.orm import Session
 
 
-def test_should_charge_debit():
+def test_should_charge_debit(session: Session):
     account_id = uuid4()
     external_id = uuid4()
     created_at = datetime.now()
@@ -24,9 +25,9 @@ def test_should_charge_debit():
     )
     transaction_list = [transaction1, transaction2]
     # mock
-    reading_account: ReadingAccount = AccountRepository()
+    reading_account: ReadingAccount = AccountRepository(session)
     reading_account.by_external_id = MagicMock(return_value=account)
-    reading_transaction: ReadingTransaction = LedgerRepository()
+    reading_transaction: ReadingTransaction = LedgerRepository(session)
     reading_transaction.by_account_id = MagicMock(return_value=transaction_list)
     # usecase
     usecase = GetTotalCredit(reading_account, reading_transaction)

@@ -28,50 +28,48 @@ ledger_table = Table(
 
 
 class LedgerRepository(CreatingTransaction, ReadingTransaction):
+    def __init__(self, session: Session):
+        self.session = session
+
     def create_transaction(
         self, account_id: UUID, amount: float, description: str, event_id=None | UUID
     ) -> Transaction:
-        with Session(engine) as session:
-            insert_line = (
-                insert(ledger_table)
-                .values(
-                    account_id=account_id,
-                    amount=amount,
-                    description=description,
-                    event_id=event_id,
-                )
-                .returning(ledger_table.c.id, ledger_table.c.created_at)
+        insert_line = (
+            insert(ledger_table)
+            .values(
+                account_id=account_id,
+                amount=amount,
+                description=description,
+                event_id=event_id,
             )
-            row = session.execute(insert_line).first()
-            session.commit()
-            if row is None:
-                raise Exception("somethinf wrong happen")
-            (id, created_at) = deepcopy(row)
-            return Transaction(
-                id, account_id, amount, description, event_id, created_at
-            )
+            .returning(ledger_table.c.id, ledger_table.c.created_at)
+        )
+        row = self.session.execute(insert_line).first()
+        self.session.commit()
+        if row is None:
+            raise Exception("something wrong happen")
+        (id, created_at) = deepcopy(row)
+        return Transaction(id, account_id, amount, description, event_id, created_at)
 
     def by_account_id(
         self, account_id: UUID, date_start: datetime, date_end=datetime.now()
     ) -> List[Transaction]:
-        with Session(engine) as session:
-            query = select(ledger_table).where(ledger_table.c.id == account_id)
-            cursor = session.execute(query).all()
-            if cursor is None:
-                return []
-            else:
-                tuples = deepcopy(cursor)
-                transaction_list: List[Transaction] = list(
-                    map(
-                        lambda t: Transaction(
-                            t.id,
-                            account_id,
-                            t.amount,
-                            t.description,
-                            t.event_id,
-                            t.created_at,
-                        ),
-                        tuples,
-                    )
+        query = select(ledger_table).where(ledger_table.c.account_id == account_id)
+        cursor = self.session.execute(query).all()
+        if cursor is None:
+            return []
+        else:
+            transaction_list = deepcopy(cursor)
+            return list(
+                map(
+                    lambda t: Transaction(
+                        t.id,
+                        account_id,
+                        t.amount,
+                        t.description,
+                        t.event_id,
+                        t.created_at,
+                    ),
+                    transaction_list,
                 )
-                return transaction_list
+            )

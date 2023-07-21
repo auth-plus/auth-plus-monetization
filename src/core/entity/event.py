@@ -17,7 +17,7 @@ class EventType(Enum):
 class Event:
     id: UUID
     type: EventType
-    value: float
+    price: float
     created_at: datetime
 
 

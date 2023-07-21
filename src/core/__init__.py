@@ -20,53 +20,59 @@ from src.core.usecase.receive_credit import ReceiveCredit
 from src.core.usecase.receive_event import ReceiveEvent
 from src.core.usecase.transform_to_post_paid import TransformToPostPaid
 from src.core.usecase.transform_to_pre_paid import TransformToPrePaid
+from sqlalchemy.orm import Session
+
+from src.config.database import engine
 
 
 class Core:
     def __init__(self):
-        billing_charge: BillingCharge = BillingService()
-        billing_fetch_user: BillingFetchUser = BillingService()
-        creating_account: CreatingAccount = AccountRepository()
-        creating_discount: CreatingDiscount = DiscountRepository()
-        creating_transaction: CreatingTransaction = LedgerRepository()
-        reading_account: ReadingAccount = AccountRepository()
-        reading_discount: ReadingDiscount = DiscountRepository()
-        reading_event: ReadingEvent = EventRepository()
-        reading_transaction: ReadingTransaction = LedgerRepository()
-        update_account: UpdateAccount = AccountRepository()
+        with Session(engine) as session:
+            billing_charge: BillingCharge = BillingService()
+            billing_fetch_user: BillingFetchUser = BillingService()
+            creating_account: CreatingAccount = AccountRepository(session)
+            creating_discount: CreatingDiscount = DiscountRepository(session)
+            creating_transaction: CreatingTransaction = LedgerRepository(session)
+            reading_account: ReadingAccount = AccountRepository(session)
+            reading_discount: ReadingDiscount = DiscountRepository(session)
+            reading_event: ReadingEvent = EventRepository(session)
+            reading_transaction: ReadingTransaction = LedgerRepository(session)
+            update_account: UpdateAccount = AccountRepository(session)
 
-        account_create = AccountCreate(
-            creating_account,
-        )
-        charge_debit = ChargeDebit(reading_account, reading_transaction, billing_charge)
-        get_total_credit = GetTotalCredit(reading_account, reading_transaction)
-        receive_credit = ReceiveCredit(
-            reading_account,
-            billing_fetch_user,
-            billing_charge,
-            creating_transaction,
-        )
-        receive_event = ReceiveEvent(
-            reading_event, reading_account, creating_transaction
-        )
-        transform_to_post_paid = TransformToPostPaid(
-            reading_account,
-            reading_transaction,
-            creating_discount,
-            update_account,
-        )
-        transform_to_pre_paid = TransformToPrePaid(
-            reading_account,
-            reading_transaction,
-            reading_discount,
-            billing_charge,
-            update_account,
-        )
+            account_create = AccountCreate(
+                creating_account,
+            )
+            charge_debit = ChargeDebit(
+                reading_account, reading_transaction, billing_charge
+            )
+            get_total_credit = GetTotalCredit(reading_account, reading_transaction)
+            receive_credit = ReceiveCredit(
+                reading_account,
+                billing_fetch_user,
+                billing_charge,
+                creating_transaction,
+            )
+            receive_event = ReceiveEvent(
+                reading_event, reading_account, creating_transaction
+            )
+            transform_to_post_paid = TransformToPostPaid(
+                reading_account,
+                reading_transaction,
+                creating_discount,
+                update_account,
+            )
+            transform_to_pre_paid = TransformToPrePaid(
+                reading_account,
+                reading_transaction,
+                reading_discount,
+                billing_charge,
+                update_account,
+            )
 
-        self.account_create = account_create
-        self.charge_debit = charge_debit
-        self.get_total_credit = get_total_credit
-        self.receive_credit = receive_credit
-        self.receive_event = receive_event
-        self.transform_to_post_paid = transform_to_post_paid
-        self.transform_to_pre_paid = transform_to_pre_paid
+            self.account_create = account_create
+            self.charge_debit = charge_debit
+            self.get_total_credit = get_total_credit
+            self.receive_credit = receive_credit
+            self.receive_event = receive_event
+            self.transform_to_post_paid = transform_to_post_paid
+            self.transform_to_pre_paid = transform_to_pre_paid

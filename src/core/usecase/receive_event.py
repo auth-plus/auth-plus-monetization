@@ -21,7 +21,7 @@ class ReceiveEvent:
     def receive_event(self, external_id: UUID, event_input: str) -> Transaction:
         event_type = convert_str_to_event_type(event_input)
         event = self.reading_event.by_type(event_type)
-        debit = -event.value
+        debit = -event.price
         account = self.reading_account.by_external_id(external_id)
         transaction = self.creating_transaction.create_transaction(
             account.id, debit, "event receive", event.id

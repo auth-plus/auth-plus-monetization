@@ -1,6 +1,7 @@
 from datetime import datetime
 from unittest.mock import MagicMock
 from uuid import uuid4
+from sqlalchemy.orm import Session
 
 from src.core.entity.account import Account, AccountType
 from src.core.entity.billing import InvoiceItem
@@ -17,7 +18,7 @@ from src.core.usecase.driven.update_account import UpdateAccount
 from src.core.usecase.transform_to_pre_paid import TransformToPrePaid
 
 
-def test_should_transform_to_pre_paid():
+def test_should_transform_to_pre_paid(session: Session):
     account_id = uuid4()
     external_id = uuid4()
     account_created_at = datetime.now()
@@ -43,17 +44,17 @@ def test_should_transform_to_pre_paid():
         datetime.today(),
     )
     # mock
-    reading_account: ReadingAccount = AccountRepository()
+    reading_account: ReadingAccount = AccountRepository(session)
     reading_account.by_external_id = MagicMock(return_value=account)
-    reading_transaction: ReadingTransaction = LedgerRepository()
+    reading_transaction: ReadingTransaction = LedgerRepository(session)
     reading_transaction.by_account_id = MagicMock(
         return_value=[transaction_1, transaction_2, transaction_3]
     )
-    reading_discount: ReadingDiscount = DiscountRepository()
+    reading_discount: ReadingDiscount = DiscountRepository(session)
     reading_discount.by_account_id = MagicMock(return_value=discount)
-    billing_charge: BillingCharge = LedgerRepository()
+    billing_charge: BillingCharge = LedgerRepository(session)
     billing_charge.charge = MagicMock(return_value=None)
-    update_account: UpdateAccount = AccountRepository()
+    update_account: UpdateAccount = AccountRepository(session)
     update_account.change_type = MagicMock(return_value=None)
     # usecase
     usecase = TransformToPrePaid(

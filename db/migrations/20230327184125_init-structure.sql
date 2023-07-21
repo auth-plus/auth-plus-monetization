@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS "subscription" (
     PRIMARY KEY ("id"),
     CONSTRAINT fk_s_account_id FOREIGN KEY("account_id") REFERENCES "account"("id")
 );
-CREATE TYPE discount_type AS ENUM('percentage', 'absolute');
+CREATE TYPE discount_type AS ENUM('PERCENTAGE', 'ABSOLUTE');
 CREATE TABLE IF NOT EXISTS "discount" (
     "id" UUID NOT NULL DEFAULT Uuid_generate_v1(),
     "account_id" UUID NOT NULL,
@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS "ledger" (
 CREATE TABLE IF NOT EXISTS "event" (
     "id" UUID NOT NULL DEFAULT Uuid_generate_v1(),
     "type" TEXT NOT NULL,
-    "value" NUMERIC(5, 2) NOT NULL,
+    "price" NUMERIC(5, 2) NOT NULL,
     "created_at" TIMESTAMP DEFAULT Timezone('utc', Now()),
     PRIMARY KEY ("id")
 );
