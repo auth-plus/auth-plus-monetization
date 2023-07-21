@@ -1,15 +1,11 @@
-from copy import deepcopy
 from datetime import datetime
 from uuid import UUID, uuid4
 
-from sqlalchemy import delete, insert, select
 from sqlalchemy.orm import Session
 
-from src.config.database import engine
 from src.core.entity.account import AccountType
 from src.core.entity.event import EventType
 from src.core.repository.ledger import LedgerRepository
-
 from tests.factory.helpers import (
     create_account,
     create_event,

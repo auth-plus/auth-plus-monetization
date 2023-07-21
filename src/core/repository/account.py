@@ -6,7 +6,6 @@ from sqlalchemy import UUID as SQLUUID
 from sqlalchemy import Boolean, Column, Enum, MetaData, Table, insert, select, update
 from sqlalchemy.orm import Session
 
-from src.config.database import engine
 from src.core.entity.account import Account, AccountType
 from src.core.usecase.driven.creating_account import CreatingAccount
 from src.core.usecase.driven.reading_account import ReadingAccount

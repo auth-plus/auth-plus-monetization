@@ -2,12 +2,11 @@ from copy import deepcopy
 from datetime import datetime
 from uuid import UUID, uuid4
 
-from sqlalchemy import delete, insert, select
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from src.core.entity.account import AccountType
 from src.core.repository.account import AccountRepository, account_table
-
 from tests.factory.helpers import create_account, delete_account
 
 

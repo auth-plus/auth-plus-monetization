@@ -2,6 +2,8 @@ from datetime import datetime
 from unittest.mock import MagicMock
 from uuid import uuid4
 
+from sqlalchemy.orm import Session
+
 from src.core.entity.account import Account, AccountType
 from src.core.entity.transaction import Transaction
 from src.core.repository.account import AccountRepository
@@ -9,7 +11,6 @@ from src.core.repository.ledger import LedgerRepository
 from src.core.usecase.driven.reading_account import ReadingAccount
 from src.core.usecase.driven.reading_transaction import ReadingTransaction
 from src.core.usecase.get_total_credit import GetTotalCredit
-from sqlalchemy.orm import Session
 
 
 def test_should_charge_debit(session: Session):

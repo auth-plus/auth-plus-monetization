@@ -2,6 +2,8 @@ from datetime import datetime
 from unittest.mock import MagicMock
 from uuid import uuid4
 
+from sqlalchemy.orm import Session
+
 from src.core.entity.account import Account, AccountType
 from src.core.entity.event import Event, EventType
 from src.core.entity.transaction import Transaction
@@ -11,7 +13,6 @@ from src.core.usecase.driven.creating_transaction import CreatingTransaction
 from src.core.usecase.driven.reading_account import ReadingAccount
 from src.core.usecase.driven.reading_event import ReadingEvent
 from src.core.usecase.receive_event import ReceiveEvent
-from sqlalchemy.orm import Session
 
 
 def test_should_receive_event(session: Session):

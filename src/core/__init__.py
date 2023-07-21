@@ -1,3 +1,6 @@
+from sqlalchemy.orm import Session
+
+from src.config.database import engine
 from src.core.repository.account import AccountRepository
 from src.core.repository.billing import BillingService
 from src.core.repository.discount import DiscountRepository
@@ -20,9 +23,6 @@ from src.core.usecase.receive_credit import ReceiveCredit
 from src.core.usecase.receive_event import ReceiveEvent
 from src.core.usecase.transform_to_post_paid import TransformToPostPaid
 from src.core.usecase.transform_to_pre_paid import TransformToPrePaid
-from sqlalchemy.orm import Session
-
-from src.config.database import engine
 
 
 class Core:

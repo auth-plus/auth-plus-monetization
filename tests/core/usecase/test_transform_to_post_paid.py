@@ -1,6 +1,7 @@
 from datetime import datetime
 from unittest.mock import MagicMock
 from uuid import uuid4
+
 from sqlalchemy.orm import Session
 
 from src.core.entity.account import Account, AccountType

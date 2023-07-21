@@ -1,16 +1,8 @@
-from copy import deepcopy
-from datetime import datetime
 from decimal import Decimal
-from uuid import UUID, uuid4
-
-from sqlalchemy import delete, insert, select
 from sqlalchemy.orm import Session
 
-from src.config.database import engine
-from src.core.entity.account import AccountType
 from src.core.entity.event import EventType
-from src.core.repository.event import EventRepository, event_table
-
+from src.core.repository.event import EventRepository
 from tests.factory.helpers import create_event, delete_event
 
 

@@ -2,10 +2,9 @@ from copy import deepcopy
 
 from sqlalchemy import TIMESTAMP
 from sqlalchemy import UUID as SQLUUID
-from sqlalchemy import Column, MetaData, Numeric, Enum, Table, select
+from sqlalchemy import Column, Enum, MetaData, Numeric, Table, select
 from sqlalchemy.orm import Session
 
-from src.config.database import engine
 from src.core.entity.event import Event, EventType
 from src.core.usecase.driven.reading_event import ReadingEvent
 

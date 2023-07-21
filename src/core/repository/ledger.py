@@ -8,7 +8,6 @@ from sqlalchemy import UUID as SQLUUID
 from sqlalchemy import Column, Float, MetaData, String, Table, insert, select
 from sqlalchemy.orm import Session
 
-from src.config.database import engine
 from src.core.entity.transaction import Transaction
 from src.core.usecase.driven.creating_transaction import CreatingTransaction
 from src.core.usecase.driven.reading_transaction import ReadingTransaction

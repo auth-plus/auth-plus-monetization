@@ -1,12 +1,10 @@
 from copy import deepcopy
 from decimal import Decimal
-from uuid import UUID, uuid4
+from uuid import UUID
 
 from sqlalchemy import delete, insert
 from sqlalchemy.orm import Session
 
-
-from src.config.database import engine
 from src.core.entity.account import Account, AccountType
 from src.core.entity.discount import Discount, DiscountType
 from src.core.entity.event import Event, EventType

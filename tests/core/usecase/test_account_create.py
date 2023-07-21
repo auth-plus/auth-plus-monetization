@@ -2,11 +2,12 @@ from datetime import datetime
 from unittest.mock import MagicMock
 from uuid import uuid4
 
+from sqlalchemy.orm import Session
+
 from src.core.entity.account import Account, AccountType
 from src.core.repository.account import AccountRepository
 from src.core.usecase.account_create import AccountCreate
 from src.core.usecase.driven.creating_account import CreatingAccount
-from sqlalchemy.orm import Session
 
 
 def test_should_create(session: Session):

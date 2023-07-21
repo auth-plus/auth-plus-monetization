@@ -16,7 +16,6 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import Session
 
-from src.config.database import engine
 from src.core.entity.discount import Discount, DiscountType
 from src.core.usecase.driven.creating_discount import CreatingDiscount
 from src.core.usecase.driven.reading_discount import ReadingDiscount
@@ -64,7 +63,7 @@ class DiscountRepository(CreatingDiscount, ReadingDiscount):
             select(discount_table)
             .where(
                 discount_table.c.account_id == account_id,
-                discount_table.c.is_enable == True,
+                discount_table.c.is_enable,
             )
             .limit(1)
             .order_by(discount_table.c.created_at.desc())

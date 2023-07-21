@@ -2,6 +2,8 @@ from datetime import datetime
 from unittest.mock import MagicMock
 from uuid import uuid4
 
+from sqlalchemy.orm import Session
+
 from src.core.entity.account import Account, AccountType
 from src.core.entity.billing import InvoiceItem
 from src.core.entity.transaction import Transaction
@@ -12,7 +14,6 @@ from src.core.usecase.driven.billing.billing_fetch_user import BillingFetchUser
 from src.core.usecase.driven.creating_transaction import CreatingTransaction
 from src.core.usecase.driven.reading_account import ReadingAccount
 from src.core.usecase.receive_credit import ReceiveCredit
-from sqlalchemy.orm import Session
 
 
 def test_should_receive_credit(session: Session):
