@@ -12,21 +12,20 @@ from tests.factory.helpers import create_account, delete_account
 
 def test_should_create(session: Session):
     external_id = uuid4()
-    type = AccountType.PRE_PAID
+    type_ = AccountType.PRE_PAID
 
     repository = AccountRepository(session)
-    result = repository.create(external_id, type)
+    result = repository.create(external_id, type_)
     assert isinstance(result.id, UUID)
     assert result.external_id == external_id
-    assert result.type == type
+    assert result.type == type_
     assert result.is_enable
     assert isinstance(result.created_at, datetime)
     delete_account(session, result.id)
 
 
 def test_should_select_by_id(session: Session):
-    type = AccountType.PRE_PAID
-    account = create_account(session, uuid4(), type)
+    account = create_account(session, uuid4(), AccountType.PRE_PAID)
     repository = AccountRepository(session)
     result = repository.by_id(account.id)
     assert result.id == account.id
@@ -39,8 +38,7 @@ def test_should_select_by_id(session: Session):
 
 def test_should_select_by_external_id(session: Session):
     external_id = uuid4()
-    type = AccountType.PRE_PAID
-    account = create_account(session, external_id, type)
+    account = create_account(session, external_id, AccountType.POST_PAID)
     repository = AccountRepository(session)
     result = repository.by_external_id(external_id)
     assert result.id == account.id
@@ -53,8 +51,7 @@ def test_should_select_by_external_id(session: Session):
 
 def test_should_update_type(session: Session):
     external_id = uuid4()
-    type = AccountType.PRE_PAID
-    account = create_account(session, external_id, type)
+    account = create_account(session, external_id, AccountType.PRE_PAID)
     repository = AccountRepository(session)
     repository.change_type(account.id, AccountType.POST_PAID)
     select_query = (

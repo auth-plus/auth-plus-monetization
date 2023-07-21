@@ -76,7 +76,6 @@ class TransformToPostPaidInput(BaseModel):
 def transform_to_post_paid(body: TransformToPostPaidInput):
     core = Core()
     core.transform_to_post_paid.transform_to_post_paid(body.external_id)
-    return
 
 
 class TransformToPrePaidInput(BaseModel):
@@ -87,4 +86,3 @@ class TransformToPrePaidInput(BaseModel):
 def transform_to_pre_paid(body: TransformToPrePaidInput):
     core = Core()
     core.transform_to_pre_paid.transform_to_pre_paid(body.external_id)
-    return

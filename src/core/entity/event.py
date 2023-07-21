@@ -36,4 +36,4 @@ def convert_str_to_event_type(type: str) -> EventType:
         case "ORGANIZATION_CREATED":
             return EventType.ORGANIZATION_CREATED
         case other:
-            raise Exception(f"No event mapped for this string: {other}")
+            raise ValueError(f"No event mapped for this string: {other}")
