@@ -61,18 +61,18 @@ make dev
 poetry install
 
 # Running HTTP server
-poetry run uvicorn src.presentation.server:app --reload
+poetry run uvicorn src.presentation.server:app --host 0.0.0.0 --reload
+poetry run uvicorn src.presentation.server:app --host 0.0.0.0 --port 5004
 
-# Running Job scheduled (need to be src/presentation folder to execute this command)
-poetry run celery -A src.config.worker flower --port=5566
+poetry run huey_consumer.py src.presentation.worker.huey
 
 # Running formatter
-poetry run black src/ -v
+poetry run black src/
 
 # Running lint
-poetry run flake8 src/ -v
+poetry run flake8 src/
 poetry run isort src/
-poetry run mypy src/ -v --check-untyped-defs
+poetry run mypy src/ --check-untyped-defs
 
 # Running test
 poetry run coverage run -m pytest

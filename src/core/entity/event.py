@@ -5,10 +5,10 @@ from uuid import UUID
 
 
 class EventType(Enum):
-    EMAIL_CREATED = "2FA_EMAIL_CREATED"
-    PHONE_CREATED = "2FA_PHONE_CREATED"
-    EMAIL_SENT = "2FA_EMAIL_SENT"
-    PHONE_SENT = "2FA_PHONE_SENT"
+    EMAIL_AUTH_FACTOR_CREATED = "EMAIL_AUTH_FACTOR_CREATED"
+    PHONE_AUTH_FACTOR_CREATED = "PHONE_AUTH_FACTOR_CREATED"
+    EMAIL_AUTH_FACTOR_SENT = "EMAIL_AUTH_FACTOR_SENT"
+    PHONE_AUTH_FACTOR_SENT = "PHONE_AUTH_FACTOR_SENT"
     USER_CREATED = "USER_CREATED"
     ORGANIZATION_CREATED = "ORGANIZATION_CREATED"
 
@@ -23,14 +23,14 @@ class Event:
 
 def convert_str_to_event_type(type_: str) -> EventType:
     match type_:
-        case "2FA_EMAIL_CREATED":
-            return EventType.EMAIL_CREATED
-        case "2FA_PHONE_CREATED":
-            return EventType.PHONE_CREATED
-        case "2FA_EMAIL_SENT":
-            return EventType.EMAIL_SENT
-        case "2FA_PHONE_SENT":
-            return EventType.PHONE_SENT
+        case "EMAIL_AUTH_FACTOR_CREATED":
+            return EventType.EMAIL_AUTH_FACTOR_CREATED
+        case "PHONE_AUTH_FACTOR_CREATED":
+            return EventType.PHONE_AUTH_FACTOR_CREATED
+        case "EMAIL_AUTH_FACTOR_SENT":
+            return EventType.EMAIL_AUTH_FACTOR_SENT
+        case "PHONE_AUTH_FACTOR_SENT":
+            return EventType.PHONE_AUTH_FACTOR_SENT
         case "USER_CREATED":
             return EventType.USER_CREATED
         case "ORGANIZATION_CREATED":

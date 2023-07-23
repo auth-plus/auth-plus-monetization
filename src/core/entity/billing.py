@@ -28,6 +28,6 @@ class Charge:
 @dataclass
 class Invoice:
     id: UUID
-    account_id: UUID
+    user_id: UUID
     status: str
     created_at: datetime

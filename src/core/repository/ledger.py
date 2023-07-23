@@ -21,7 +21,7 @@ ledger_table = Table(
     Column("account_id", SQLUUID, nullable=False),
     Column("amount", Float, nullable=False),
     Column("description", String(255), nullable=False),
-    Column("event_id", SQLUUID, nullable=False),
+    Column("event_id", SQLUUID, nullable=True),
     Column("created_at", TIMESTAMP),
 )
 

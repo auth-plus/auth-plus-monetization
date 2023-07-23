@@ -19,7 +19,7 @@ from tests.factory.helpers import (
 def test_should_create_transaction(session: Session):
     amount = 123.4
     description = "descript"
-    event = create_event(session, EventType.EMAIL_CREATED, amount)
+    event = create_event(session, EventType.EMAIL_AUTH_FACTOR_SENT, amount)
     account = create_account(session, uuid4(), AccountType.PRE_PAID)
     repository = LedgerRepository(session)
     result = repository.create_transaction(account.id, amount, description, event.id)
@@ -35,7 +35,7 @@ def test_should_create_transaction(session: Session):
 
 
 def test_should_select_by_account_id(session: Session):
-    event = create_event(session, EventType.EMAIL_CREATED, 123.4)
+    event = create_event(session, EventType.PHONE_AUTH_FACTOR_CREATED, 123.4)
     account = create_account(session, uuid4(), AccountType.PRE_PAID)
     transaction = create_transaction(session, account.id, 123.4, "descript", event.id)
     repository = LedgerRepository(session)
