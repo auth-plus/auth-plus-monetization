@@ -10,7 +10,7 @@ infra/down:
 .PHONY: dev
 dev:
 	make infra/up
-	docker compose exec api sh
+	# docker compose exec api sh
 
 .PHONY: test
 test:
@@ -28,9 +28,11 @@ clean/docker:
 	rm -rf db/schema.sql
 	rm -f db/schema.sql
 
-.PHONY: clean/cache
-clean/cache:
-	find . | grep -E "(/__pycache__$|\.mypy_cache$|\.pytest_cache$|\.pyc$|\.pyo$\)" | xargs sudo rm -rf
+.PHONY: clean/test
+clean/test:
+	sudo rm ./.coverage
+	sudo rm -rf ./.mypy_cache
+	sudo rm -rf ./.pytest_cache
 
 .PHONY: migration/up
 migration/up:

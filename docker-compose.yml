@@ -21,7 +21,26 @@ services:
     networks:
       - monetization-net
 
-  job:
+  messaging:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: tail -f /dev/null
+    # command: poetry run python src/presentation/messaging.py
+    environment:
+      APP_NAME: auth-plus-monetization
+      PORT: 5004
+      PYTHON_ENV: development
+      DATABASE_URL: postgresql+psycopg2://root:db_password@database:5432/monetization
+      REDIS_URL: cache
+      KAFKA_URL: localhost:9092
+    volumes:
+      - .:/app
+    restart: always
+    networks:
+      - monetization-net
+
+  worker:
     build:
       context: .
       dockerfile: Dockerfile
