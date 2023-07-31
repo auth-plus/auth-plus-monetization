@@ -21,7 +21,8 @@ consumer = KafkaConsumer(
 consumer.subscribe(topics)
 
 
-if __name__ == "__main__":
+if __name__ == "__main__" and __package__ is None:
+    __package__ = "src.presentation.messaging"
     while True:
         try:
             for msg in consumer:
