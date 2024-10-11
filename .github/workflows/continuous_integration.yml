@@ -12,14 +12,16 @@ jobs:
   Audit:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
-          python-version: "3.10"
-      - name: Install poetry
-        run: python3 -m pip install poetry==${{ env.POETRY_VERSION }}
-      - name: Install Dependencies
-        run: poetry config virtualenvs.create false && poetry install
+          python-version: "3.12"
+      - name: Install and configure Poetry
+        uses: snok/install-poetry@v1
+        with:
+          version: 1.8.3
+          virtualenvs-create: false
+          installer-parallel: true
       - name: Installing audit tool
         run: poetry self add poetry-audit-plugin
       - name: Executing
@@ -57,16 +59,20 @@ jobs:
       REDIS_URL: redis://localhost:6379
       KAFKA_URL:
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
-          python-version: "3.10"
+          python-version: "3.12"
       - name: Running migrations
         run: HOST=localhost make migration/up
-      - name: Install poetry
-        run: python3 -m pip install poetry==${{ env.POETRY_VERSION }}
-      - name: Install Dependencies
-        run: poetry config virtualenvs.create false && poetry install
+      - name: Install and configure Poetry
+        uses: snok/install-poetry@v1
+        with:
+          version: 1.8.3
+          virtualenvs-create: false
+          installer-parallel: true
+      - name: Install depedencies
+        run: poetry install
       - name: Generating Coverage
         run: coverage run -m pytest
       - name: Exporting lcov and xml
@@ -77,7 +83,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       - name: Code Climate Scan
-        uses: paambaati/codeclimate-action@v3.2.0
+        uses: paambaati/codeclimate-action@v9.0.0
         env:
           CC_TEST_REPORTER_ID: ${{ secrets.CODECLIMATE_TOKEN }}
         with:
@@ -90,14 +96,18 @@ jobs:
   Lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
-          python-version: "3.10"
-      - name: Install poetry
-        run: python3 -m pip install poetry==${{ env.POETRY_VERSION }}
-      - name: Install Dependencies
-        run: poetry config virtualenvs.create false && poetry install
+          python-version: "3.12"
+      - name: Install and configure Poetry
+        uses: snok/install-poetry@v1
+        with:
+          version: 1.8.3
+          virtualenvs-create: false
+          installer-parallel: true
+      - name: Install depedencies
+        run: poetry install
       - name: Running flake8
         run: flake8 src/ -v
       - name: Running mypy
