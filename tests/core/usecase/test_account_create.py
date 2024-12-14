@@ -17,7 +17,7 @@ def test_should_create(session: Session):
     # mock
     creating_account: CreatingAccount = AccountRepository(session)
     creating_account.create = MagicMock(
-        return_value=Account(id_, external_id, type_, True, datetime.now())
+        return_value=Account(id_, external_id, type_, datetime.now(), None)
     )
     # usecase
     usecase = AccountCreate(creating_account)
@@ -26,6 +26,5 @@ def test_should_create(session: Session):
     assert result.id == id_
     assert result.external_id == external_id
     assert result.type == type_
-    assert result.is_enable
     assert isinstance(result.created_at, datetime)
     creating_account.create.assert_called_once_with(external_id, type_)

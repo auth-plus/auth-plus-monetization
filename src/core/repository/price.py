@@ -11,28 +11,29 @@ from src.core.usecase.driven.reading_event import EventNotFoundException, Readin
 metadata_obj = MetaData()
 
 event_table = Table(
-    "event",
+    "price",
     metadata_obj,
     Column("id", SQLUUID, nullable=False),
-    Column("type", Enum(EventType), nullable=False),
-    Column("price", Numeric(5, 2), nullable=False),
-    Column("created_at", TIMESTAMP),
+    Column("event", Enum(EventType), nullable=False),
+    Column("value", Numeric(5, 2), nullable=False),
+    Column("created_at", TIMESTAMP, nullable=False),
+    Column("deleted_at", TIMESTAMP),
 )
 
 
-class EventRepository(ReadingEvent):
+class PriceRepository(ReadingEvent):
     def __init__(self, session: Session):
         self.session = session
 
-    def by_type(self, type_: EventType) -> Event:
+    def by_event(self, event: EventType) -> Event:
         query = (
             select(event_table)
-            .where(event_table.c.type == type_)
+            .where(event_table.c.event == event)
             .order_by(event_table.c.created_at.desc())
             .limit(1)
         )
         cursor = self.session.execute(query).first()
         if cursor is None:
             raise EventNotFoundException("event not found")
-        (id_, type_, price, created_at) = deepcopy(cursor)
-        return Event(id_, type_, price, created_at)
+        (id_, event_, price, created_at, deleted_at) = deepcopy(cursor)
+        return Event(id_, event_, price, created_at)

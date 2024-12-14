@@ -17,7 +17,7 @@ def test_should_charge_debit(session: Session):
     account_id = uuid4()
     external_id = uuid4()
     created_at = datetime.now()
-    account = Account(account_id, external_id, AccountType.PRE_PAID, True, created_at)
+    account = Account(account_id, external_id, AccountType.PRE_PAID, created_at, None)
     transaction1 = Transaction(
         uuid4(), account_id, 1.0, "desc", uuid4(), datetime.today()
     )

@@ -9,5 +9,5 @@ class EventNotFoundException(Exception):
 
 class ReadingEvent(metaclass=ABCMeta):
     @abstractmethod
-    def by_type(self, type_: EventType) -> Event:
+    def by_event(self, event: EventType) -> Event:
         pass

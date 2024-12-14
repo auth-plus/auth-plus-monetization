@@ -19,7 +19,7 @@ def test_should_create(session: Session):
     assert isinstance(result.id, UUID)
     assert result.external_id == external_id
     assert result.type == type_
-    assert result.is_enable
+    assert result.deleted_at is None
     assert isinstance(result.created_at, datetime)
     delete_account(session, result.id)
 
@@ -31,7 +31,7 @@ def test_should_select_by_id(session: Session):
     assert result.id == account.id
     assert result.external_id == account.external_id
     assert result.type == account.type
-    assert result.is_enable
+    assert result.deleted_at is None
     assert result.created_at == account.created_at
     delete_account(session, account.id)
 
@@ -44,7 +44,7 @@ def test_should_select_by_external_id(session: Session):
     assert result.id == account.id
     assert result.external_id == account.external_id
     assert result.type == account.type
-    assert result.is_enable
+    assert result.deleted_at is None
     assert result.created_at == account.created_at
     delete_account(session, account.id)
 
@@ -64,6 +64,6 @@ def test_should_update_type(session: Session):
     assert result[0] == account.id
     assert result[1] == account.external_id
     assert result[2] == AccountType.POST_PAID
-    assert result[3]
-    assert result[4] == account.created_at
+    assert result[3] == account.created_at
+    assert result[4] is None
     delete_account(session, account.id)

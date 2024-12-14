@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
+from typing import Optional
 from uuid import UUID
 
 
@@ -16,5 +17,5 @@ class Discount:
     reason: str
     amount: float
     type: DiscountType
-    is_enable: bool
     created_at: datetime
+    deleted_at: Optional[datetime]

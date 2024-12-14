@@ -1,14 +1,17 @@
-FROM python:3.12-alpine
+FROM python:3.12.3-slim AS dependency
 WORKDIR /app
 
-COPY ./pyproject.toml ./poetry.lock ./
-RUN apk update
-RUN apk add --no-cache --virtual build-deps gcc python3-dev musl-dev
-RUN apk add postgresql-dev
-RUN pip install --upgrade pip && pip install poetry==1.4.1
-RUN poetry config virtualenvs.create false && poetry install
-
+RUN apt update && apt install python3-dev libpq-dev gcc -y
+RUN pip install pipx
+RUN pipx install poetry==1.8.5
+ENV PATH=/root/.local/bin:$PATH
+RUN poetry --version
+RUN poetry config virtualenvs.create false
 COPY  . .
+ENV VIRTUAL_ENV=/opt/env
+RUN python -m venv $VIRTUAL_ENV
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+RUN poetry install --no-root
 
 # For development
 EXPOSE 8000

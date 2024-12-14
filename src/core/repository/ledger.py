@@ -21,8 +21,9 @@ ledger_table = Table(
     Column("account_id", SQLUUID, nullable=False),
     Column("amount", Float, nullable=False),
     Column("description", String(255), nullable=False),
-    Column("event_id", SQLUUID, nullable=True),
-    Column("created_at", TIMESTAMP),
+    Column("price_id", SQLUUID),
+    Column("created_at", TIMESTAMP, nullable=False),
+    Column("deleted_at", TIMESTAMP),
 )
 
 
@@ -31,7 +32,7 @@ class LedgerRepository(CreatingTransaction, ReadingTransaction):
         self.session = session
 
     def create_transaction(
-        self, account_id: UUID, amount: float, description: str, event_id=None | UUID
+        self, account_id: UUID, amount: float, description: str, price_id=None | UUID
     ) -> Transaction:
         insert_line = (
             insert(ledger_table)
@@ -39,7 +40,7 @@ class LedgerRepository(CreatingTransaction, ReadingTransaction):
                 account_id=account_id,
                 amount=amount,
                 description=description,
-                event_id=event_id,
+                price_id=price_id,
             )
             .returning(ledger_table.c.id, ledger_table.c.created_at)
         )
@@ -48,13 +49,14 @@ class LedgerRepository(CreatingTransaction, ReadingTransaction):
         if row is None:
             raise SystemError("Something on database did not return")
         (id_, created_at) = deepcopy(row)
-        return Transaction(id_, account_id, amount, description, event_id, created_at)
+        return Transaction(id_, account_id, amount, description, price_id, created_at)
 
     def by_account_id(
         self, account_id: UUID, date_start: datetime, date_end=datetime.now()
     ) -> List[Transaction]:
         query = select(ledger_table).where(ledger_table.c.account_id == account_id)
         cursor = self.session.execute(query).all()
+        self.session.commit()
         if cursor is None:
             return []
         else:
@@ -63,10 +65,10 @@ class LedgerRepository(CreatingTransaction, ReadingTransaction):
                 map(
                     lambda t: Transaction(
                         t.id,
-                        account_id,
+                        t.account_id,
                         t.amount,
                         t.description,
-                        t.event_id,
+                        t.price_id,
                         t.created_at,
                     ),
                     transaction_list,
