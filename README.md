@@ -63,7 +63,7 @@ poetry install
 # Running HTTP server
 poetry run uvicorn src.presentation.server:app --host 0.0.0.0 --reload
 poetry run uvicorn src.presentation.server:app --host 0.0.0.0 --port 5004
-poetry run python3 src/presentation/worker.py
+poetry run python3 -m src.presentation.worker
 
 # Running formatter
 poetry run black src/

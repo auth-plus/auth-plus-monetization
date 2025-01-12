@@ -23,7 +23,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    command: poetry run python3 src/presentation/worker.py
+    command: poetry run python3 -m src.presentation.worker
     environment:
       APP_NAME: auth-plus-monetization
       PYTHON_ENV: development
