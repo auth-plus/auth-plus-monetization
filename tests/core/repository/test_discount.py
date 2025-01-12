@@ -24,7 +24,6 @@ def test_should_create(session: Session):
     assert isinstance(result.id, UUID)
     assert result.account_id == account.id
     assert result.reason == reason
-    assert result.is_enable
     assert result.amount == amount
     assert result.type == type_
     assert isinstance(result.created_at, datetime)
@@ -42,7 +41,6 @@ def test_should_select_by_account_id(session: Session):
     assert result.id == discount.id
     assert result.account_id == account.id
     assert result.reason == discount.reason
-    assert result.is_enable
     assert result.amount == discount.amount
     assert result.type == discount.type
     assert result.created_at == discount.created_at

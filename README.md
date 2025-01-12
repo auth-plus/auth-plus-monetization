@@ -18,7 +18,7 @@ This project it's a sample for monetization system. It use a hexagonal architetu
 
 ### Types of plan
 
-There will be two types of monetization: Pre-Paid and Post-Paid.
+There will be two types of subscription plans: Pre-Paid and Post-Paid.
 
 #### Pre-Paid
 
@@ -63,8 +63,7 @@ poetry install
 # Running HTTP server
 poetry run uvicorn src.presentation.server:app --host 0.0.0.0 --reload
 poetry run uvicorn src.presentation.server:app --host 0.0.0.0 --port 5004
-
-poetry run huey_consumer.py src.presentation.worker.huey
+poetry run python3 src/presentation/worker.py
 
 # Running formatter
 poetry run black src/
@@ -75,7 +74,9 @@ poetry run isort src/
 poetry run mypy src/ --check-untyped-defs
 
 # Running test
-poetry run coverage run -m pytest
+poetry run coverage run -m pytest  # all tests
+poetry run coverage run -m pytest -s tests/presentation/test_server.py # specific file
+poetry run coverage run -m pytest tests/presentation/test_worker.py -k 'test_should_select_by_account_id' # specific test
 ```
 
 ## Dev Hints

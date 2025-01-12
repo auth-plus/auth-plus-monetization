@@ -1,4 +1,5 @@
 from abc import ABCMeta, abstractmethod
+from typing import List
 from uuid import UUID
 
 from src.core.entity.account import Account
@@ -15,4 +16,8 @@ class ReadingAccount(metaclass=ABCMeta):
 
     @abstractmethod
     def by_external_id(self, external_id: UUID) -> Account:
+        pass
+
+    @abstractmethod
+    def by_subscription_period(self) -> List[Account]:
         pass

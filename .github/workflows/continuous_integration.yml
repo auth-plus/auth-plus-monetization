@@ -19,7 +19,7 @@ jobs:
       - name: Install and configure Poetry
         uses: snok/install-poetry@v1
         with:
-          version: 1.8.3
+          version: 1.8.5
           virtualenvs-create: false
           installer-parallel: true
       - name: Installing audit tool
@@ -42,21 +42,11 @@ jobs:
           --health-retries 5
         ports:
           - 5432:5432
-      redis:
-        image: redis
-        options: >-
-          --health-cmd "redis-cli ping"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          - 6379:6379
     env:
       APP_NAME: auth-plus-monetization
       PORT: 5005
       PYTHON_ENV: test
       DATABASE_URL: postgresql+psycopg2://root:db_password@localhost:5432/monetization
-      REDIS_URL: redis://localhost:6379
       KAFKA_URL:
     steps:
       - uses: actions/checkout@v4

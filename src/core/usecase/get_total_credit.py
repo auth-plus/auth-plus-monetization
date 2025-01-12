@@ -6,6 +6,11 @@ from src.core.usecase.driven.reading_transaction import ReadingTransaction
 
 
 class GetTotalCredit:
+    """
+    This class should only be used by pre-paid type of plan
+    when the user wants know their credit
+    """
+
     def __init__(
         self,
         reading_account: ReadingAccount,

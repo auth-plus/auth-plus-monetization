@@ -12,7 +12,6 @@ services:
       PORT: 5004
       PYTHON_ENV: development
       DATABASE_URL: postgresql+psycopg2://root:db_password@database:5432/monetization
-      REDIS_URL: cache
       KAFKA_URL: localhost:9092
     volumes:
       - .:/app
@@ -24,12 +23,11 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    command: poetry run huey_consumer.py src.presentation.worker.huey -k greenlet -w 4
+    command: poetry run python3 src/presentation/worker.py
     environment:
       APP_NAME: auth-plus-monetization
       PYTHON_ENV: development
       DATABASE_URL: postgresql+psycopg2://root:db_password@database:5432/monetization
-      REDIS_URL: cache
       KAFKA_URL: localhost:9092
     volumes:
       - .:/app
@@ -49,18 +47,6 @@ services:
       - '5432:5432'
     volumes:
       - v-database:/var/lib/postgres
-    networks:
-      - monetization-net
-  
-  cache:
-    container_name: redis
-    image: redis:7.0.5
-    hostname: redis
-    restart: always
-    volumes:
-      - v-cache:/data
-    ports:
-      - '6379:6379'
     networks:
       - monetization-net
 

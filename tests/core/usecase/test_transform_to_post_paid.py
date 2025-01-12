@@ -22,7 +22,7 @@ def test_should_transform_to_post_paid(session: Session):
     external_id = uuid4()
     account_created_at = datetime.now()
     account = Account(
-        account_id, external_id, AccountType.PRE_PAID, True, account_created_at
+        account_id, external_id, AccountType.PRE_PAID, account_created_at, None
     )
     transaction_id = uuid4()
     transaction_1 = Transaction(

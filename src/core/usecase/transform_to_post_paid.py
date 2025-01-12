@@ -10,6 +10,11 @@ from src.core.usecase.driven.update_account import UpdateAccount
 
 
 class TransformToPostPaid:
+    """
+    This class should only be used by pre-paid type of plan
+    when the user wish to switch plan
+    """
+
     reason = "TransformToPostPaid"
 
     def __init__(
@@ -32,7 +37,7 @@ class TransformToPostPaid:
         self._should_create_discount(account.id, total_credit)
         self.update_account.change_type(account.id, AccountType.POST_PAID)
 
-    def _calculate_total_credit(self, account: Account):
+    def _calculate_total_credit(self, account: Account) -> float:
         transaction_list = self.reading_transaction.by_account_id(
             account.id, account.created_at
         )
@@ -46,6 +51,6 @@ class TransformToPostPaid:
             )
         else:
             if amount < 0:
-                raise SystemError(
+                raise ValueError(
                     "PrePaid Account should not have debit, only credit or 0"
                 )

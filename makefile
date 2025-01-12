@@ -18,6 +18,20 @@ test:
 	docker compose exec -T api coverage run -m pytest
 	make clean/docker
 
+.PHONY: ci
+ci:
+	poetry run black src/
+	poetry run flake8 src/
+	poetry run isort src/
+	poetry run mypy src/ --check-untyped-defs
+
+.PHONY: ci_test
+ci_test:
+	poetry run black tests/
+	poetry run flake8 tests/
+	poetry run isort tests/
+	poetry run mypy tests/ --check-untyped-defs
+
 .PHONY: clean/docker
 clean/docker:
 	make infra/down
@@ -28,9 +42,9 @@ clean/docker:
 	rm -rf db/schema.sql
 	rm -f db/schema.sql
 
-.PHONY: clean/cache
-clean/cache:
-	find . | grep -E "(/__pycache__$|\.mypy_cache$|\.pytest_cache$|\.pyc$|\.pyo$\)" | xargs sudo rm -rf
+.PHONY: clean/python
+clean/python:
+	find . | grep -E "(/__pycache__$|\.mypy_cache$|\.pytest_cache$|\.pyc$|\.pyo|\.venv$\)" | xargs sudo rm -rf
 
 .PHONY: migration/up
 migration/up:

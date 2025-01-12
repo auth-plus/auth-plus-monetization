@@ -33,7 +33,7 @@ class ChargeDebitInput(BaseModel):
 @app.post("/charge")
 def charge_debit(body: ChargeDebitInput):
     core = Core()
-    core.charge_debit.charge_debit(body.external_id, body.date_start)
+    core.charge_debit.charge_debit()
     return "Ok"
 
 

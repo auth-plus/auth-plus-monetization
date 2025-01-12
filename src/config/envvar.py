@@ -10,6 +10,5 @@ class EnvVars:
     APP_PORT = os.getenv("PORT")
     APP_ENV = os.getenv("PYTHON_ENV")
     DATABASE_HOST = os.environ["DATABASE_URL"]
-    REDIS_HOST = os.environ["REDIS_URL"]
     KAFKA_HOST = os.environ["KAFKA_URL"]
     BILLING_HOST = "http://localhost:5002"

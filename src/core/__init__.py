@@ -4,12 +4,17 @@ from src.config.database import engine
 from src.core.repository.account import AccountRepository
 from src.core.repository.billing import BillingService
 from src.core.repository.discount import DiscountRepository
-from src.core.repository.event import EventRepository
 from src.core.repository.ledger import LedgerRepository
+from src.core.repository.price import PriceRepository
 from src.core.usecase.account_create import AccountCreate
 from src.core.usecase.charge_debit import ChargeDebit
-from src.core.usecase.driven.billing.billing_charge import BillingCharge
 from src.core.usecase.driven.billing.billing_fetch_user import BillingFetchUser
+from src.core.usecase.driven.billing.billing_fetching_invoice import (
+    BillingFetchingInvoice,
+)
+from src.core.usecase.driven.billing.billing_updating_invoice import (
+    BillingUpdatingInvoice,
+)
 from src.core.usecase.driven.creating_account import CreatingAccount
 from src.core.usecase.driven.creating_discount import CreatingDiscount
 from src.core.usecase.driven.creating_transaction import CreatingTransaction
@@ -28,14 +33,15 @@ from src.core.usecase.transform_to_pre_paid import TransformToPrePaid
 class Core:
     def __init__(self):
         with Session(engine) as session:
-            billing_charge: BillingCharge = BillingService()
+            billing_updating_invoice: BillingUpdatingInvoice = BillingService()
             billing_fetch_user: BillingFetchUser = BillingService()
+            billing_fetching_invoice: BillingFetchingInvoice = BillingService()
             creating_account: CreatingAccount = AccountRepository(session)
             creating_discount: CreatingDiscount = DiscountRepository(session)
             creating_transaction: CreatingTransaction = LedgerRepository(session)
             reading_account: ReadingAccount = AccountRepository(session)
             reading_discount: ReadingDiscount = DiscountRepository(session)
-            reading_event: ReadingEvent = EventRepository(session)
+            reading_event: ReadingEvent = PriceRepository(session)
             reading_transaction: ReadingTransaction = LedgerRepository(session)
             update_account: UpdateAccount = AccountRepository(session)
 
@@ -43,17 +49,22 @@ class Core:
                 creating_account,
             )
             charge_debit = ChargeDebit(
-                reading_account, reading_transaction, billing_charge
+                reading_account,
+                billing_updating_invoice,
+                billing_fetching_invoice,
             )
             get_total_credit = GetTotalCredit(reading_account, reading_transaction)
             receive_credit = ReceiveCredit(
                 reading_account,
                 billing_fetch_user,
-                billing_charge,
+                billing_updating_invoice,
                 creating_transaction,
             )
             receive_event = ReceiveEvent(
-                reading_event, reading_account, creating_transaction
+                reading_event,
+                reading_account,
+                creating_transaction,
+                billing_updating_invoice,
             )
             transform_to_post_paid = TransformToPostPaid(
                 reading_account,
@@ -65,7 +76,7 @@ class Core:
                 reading_account,
                 reading_transaction,
                 reading_discount,
-                billing_charge,
+                billing_updating_invoice,
                 update_account,
             )
 
