@@ -35,7 +35,10 @@ def post_paid_automation_charge():
                 billing_updating_invoice.charge(invoice.id)
 
 
+# Listing all jobs
 schedule.every(1).day.do(post_paid_automation_charge)
-while True:
-    schedule.run_pending()
-    time.sleep(1)
+
+if __name__ == "__main__":
+    while True:
+        schedule.run_pending()
+        time.sleep(1)

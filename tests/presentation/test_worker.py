@@ -18,20 +18,22 @@ from tests.factory.helpers import (
 
 @responses.activate
 def test_worker_post_paid_automation_charge(session: Session):
-    account = create_account(session, uuid4(), AccountType.POST_PAID)
+    one_month_ago = datetime.datetime.now() - datetime.timedelta(days=30)
+    account = create_account(session, uuid4(), AccountType.POST_PAID, one_month_ago)
     event = get_event(session)
     transaction1 = create_transaction(session, account.id, -event.price, "t1", event.id)
     transaction2 = create_transaction(session, account.id, -event.price, "t2", event.id)
     transaction3 = create_transaction(session, account.id, -event.price, "t3", event.id)
+
 
     responses.add(
         responses.POST,
         f"{EnvVars.BILLING_HOST}/invoice",
         status=200,
         json={
-            "id": uuid4(),
-            "user_id": uuid4(),
-            "status": "draft",
+            "id": uuid4().__str__(),
+            "user_id": uuid4().__str__(),
+            "status": "Draft",
             "created_at": datetime.date.today().__str__(),
         },
     )
@@ -40,10 +42,10 @@ def test_worker_post_paid_automation_charge(session: Session):
         f"{EnvVars.BILLING_HOST}/charge",
         status=200,
         json={
-            "id": uuid4(),
-            "invoice_id": uuid4(),
-            "status": "charge",
-            "payment_method_id": uuid4(),
+            "id": uuid4().__str__(),
+            "invoice_id": uuid4().__str__(),
+            "status": "Progress",
+            "payment_method_id": uuid4().__str__(),
             "created_at": datetime.date.today().__str__(),
         },
     )

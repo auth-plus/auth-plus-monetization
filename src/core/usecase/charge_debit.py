@@ -1,4 +1,5 @@
 from src.core.entity.account import Account, AccountType
+from src.core.helpers import InvoicePostPaidError
 from src.core.usecase.driven.billing.billing_fetching_invoice import (
     BillingFetchingInvoice,
 )
@@ -34,6 +35,6 @@ class ChargeDebit:
             return
         current_invoice = self.billing_fetching_invoice.get_current(user.external_id)
         if current_invoice.status != "draft":
-            raise Exception("Every post-paid user should have at least a draft invoice")
+            raise InvoicePostPaidError()
         self.billing_updating_invoice.charge(current_invoice.id)
         return None
