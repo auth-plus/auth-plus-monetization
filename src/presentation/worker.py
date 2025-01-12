@@ -18,6 +18,7 @@ from src.core.usecase.driven.reading_transaction import ReadingTransaction
 
 
 def post_paid_automation_charge():
+    print("Starting Job: post_paid_automation_charge")
     with Session(engine) as session:
         reading_account: ReadingAccount = AccountRepository(session)
         reading_transaction: ReadingTransaction = LedgerRepository(session)
@@ -39,6 +40,7 @@ def post_paid_automation_charge():
 schedule.every(1).day.do(post_paid_automation_charge)
 
 if __name__ == "__main__":
+    print("Starting Jobs")
     while True:
         schedule.run_pending()
         time.sleep(1)
