@@ -12,6 +12,7 @@ from src.core.helpers import is_valid_uuid
 from src.core.usecase.driven.billing.billing_fetch_user import BillingFetchUser
 from src.core.usecase.driven.billing.billing_fetching_invoice import (
     BillingFetchingInvoice,
+    NoDraftInvoiceFound,
 )
 from src.core.usecase.driven.billing.billing_updating_invoice import (
     BillingUpdatingInvoice,
@@ -33,7 +34,7 @@ class BillingService(BillingFetchUser, BillingFetchingInvoice, BillingUpdatingIn
         )
         json = resp.json()
         if json["status"] != "draft":
-            raise Exception("No invoice on status draft was fetched")
+            raise NoDraftInvoiceFound("No invoice on status draft was fetched")
         return Invoice(
             json["id"],
             external_id,
@@ -52,7 +53,7 @@ class BillingService(BillingFetchUser, BillingFetchingInvoice, BillingUpdatingIn
                 is_valid_uuid(json["id"]),
                 is_valid_uuid(json["user_id"]),
                 json["status"],
-                datetime.datetime.strptime(json["created_at"], "%d/%m/%y"),
+                datetime.datetime.strptime(json["created_at"], "%Y-%m-%d"),
             )
             return invoice
         except HTTPError as exc:

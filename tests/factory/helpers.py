@@ -1,4 +1,6 @@
+import datetime
 from copy import deepcopy
+from typing import Optional
 from uuid import UUID
 
 from sqlalchemy import delete, insert, select
@@ -15,32 +17,38 @@ from src.core.repository.price import event_table
 
 
 # ACCOUNT
-def create_account(session: Session, external_id: UUID, type_: AccountType):
+def create_account(
+    session: Session,
+    external_id: UUID,
+    type_: AccountType,
+    created_at: Optional[datetime.datetime] = None,
+):
     account_insert_line = (
         insert(account_table)
-        .values(external_id=external_id, type=type_)
+        .values(
+            external_id=external_id,
+            type=type_,
+            created_at=(
+                created_at if created_at is not None else datetime.datetime.now()
+            ),
+        )
         .returning(
             account_table.c.id, account_table.c.created_at, account_table.c.deleted_at
         )
     )
     cursor_user = session.execute(account_insert_line).first()
+    session.commit()
     if cursor_user is None:
         raise SystemError("test: create_account something went wrong")
-    (id_, created_at, deleted_at) = deepcopy(cursor_user)
-    subscription_insert_line = (
-        insert(subscription_table)
-        .values(account_id=id_, type=type_)
-        .returning(
-            subscription_table.c.id,
-            subscription_table.c.created_at,
-            subscription_table.c.deleted_at,
-        )
+    (id_, created_at_, deleted_at_) = deepcopy(cursor_user)
+    subscription_insert_line = insert(subscription_table).values(
+        account_id=id_, type=type_
     )
-    cursor_subscription = session.execute(subscription_insert_line).first()
+    cursor_subscription = session.execute(subscription_insert_line)
     if cursor_subscription is None:
         raise SystemError("test: create_account something went wrong")
     session.commit()
-    return Account(id_, external_id, type_, created_at, deleted_at)
+    return Account(id_, external_id, type_, created_at_, deleted_at_)
 
 
 def delete_account(session: Session, id_: UUID):

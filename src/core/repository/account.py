@@ -102,7 +102,6 @@ class AccountRepository(CreatingAccount, ReadingAccount, UpdateAccount):
 
     def by_subscription_period(self) -> List[Account]:
         today = datetime.datetime.today()
-        should_be_deleted = subscription_table.c.deleted_at is None
         query_subscription = (
             select(account_table)
             .join(
@@ -110,8 +109,8 @@ class AccountRepository(CreatingAccount, ReadingAccount, UpdateAccount):
                 account_table.c.id == subscription_table.c.account_id,
             )
             .where(
-                extract("day", subscription_table.c.created_at)
-                == today.day & should_be_deleted,
+                extract("day", subscription_table.c.created_at) == today.day,
+                subscription_table.c.deleted_at.__eq__(None),
             )
         )
         rows = self.session.execute(query_subscription).all()
