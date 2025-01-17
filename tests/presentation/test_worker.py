@@ -19,16 +19,16 @@ from tests.factory.helpers import (
 @responses.activate
 def test_worker_post_paid_automation_charge(session: Session):
     one_month_ago = datetime.datetime.now() - datetime.timedelta(days=30)
-    account = create_account(session, uuid4(), AccountType.POST_PAID, one_month_ago)
+    external_id = uuid4()
+    account = create_account(session, external_id, AccountType.POST_PAID, one_month_ago)
     event = get_event(session)
     transaction1 = create_transaction(session, account.id, -event.price, "t1", event.id)
     transaction2 = create_transaction(session, account.id, -event.price, "t2", event.id)
     transaction3 = create_transaction(session, account.id, -event.price, "t3", event.id)
 
-
     responses.add(
-        responses.POST,
-        f"{EnvVars.BILLING_HOST}/invoice",
+        responses.GET,
+        f"{EnvVars.BILLING_HOST}/invoice/current?user_id={external_id}",
         status=200,
         json={
             "id": uuid4().__str__(),
@@ -50,7 +50,9 @@ def test_worker_post_paid_automation_charge(session: Session):
         },
     )
     post_paid_automation_charge()
-    responses.assert_call_count(f"{EnvVars.BILLING_HOST}/invoice", 1)
+    responses.assert_call_count(
+        f"{EnvVars.BILLING_HOST}/invoice/current?user_id={account.external_id}", 1
+    )
     responses.assert_call_count(f"{EnvVars.BILLING_HOST}/charge", 1)
     delete_transaction(session, transaction1.id)
     delete_transaction(session, transaction2.id)

@@ -33,7 +33,7 @@ class BillingService(BillingFetchUser, BillingFetchingInvoice, BillingUpdatingIn
             f"{EnvVars.BILLING_HOST}/invoice/current?user_id={external_id}"
         )
         json = resp.json()
-        if json["status"] != "draft":
+        if json["status"] != "Draft":
             raise NoDraftInvoiceFound("No invoice on status draft was fetched")
         return Invoice(
             json["id"],

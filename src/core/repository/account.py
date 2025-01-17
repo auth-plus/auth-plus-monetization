@@ -14,7 +14,7 @@ from src.core.usecase.driven.reading_account import (
     AccountNotFoundException,
     ReadingAccount,
 )
-from src.core.usecase.driven.update_account import UpdateAccount
+from src.core.usecase.driven.update_account import UpdatingAccount
 
 metadata_obj = MetaData()
 
@@ -39,7 +39,7 @@ subscription_table = Table(
 )
 
 
-class AccountRepository(CreatingAccount, ReadingAccount, UpdateAccount):
+class AccountRepository(CreatingAccount, ReadingAccount, UpdatingAccount):
     def __init__(self, session: Session):
         self.session = session
 

@@ -6,7 +6,7 @@ from src.core.entity.discount import DiscountType
 from src.core.usecase.driven.creating_discount import CreatingDiscount
 from src.core.usecase.driven.reading_account import ReadingAccount
 from src.core.usecase.driven.reading_transaction import ReadingTransaction
-from src.core.usecase.driven.update_account import UpdateAccount
+from src.core.usecase.driven.update_account import UpdatingAccount
 
 
 class TransformToPostPaid:
@@ -22,7 +22,7 @@ class TransformToPostPaid:
         reading_account: ReadingAccount,
         reading_transaction: ReadingTransaction,
         creating_discount: CreatingDiscount,
-        update_account: UpdateAccount,
+        update_account: UpdatingAccount,
     ):
         self.reading_account = reading_account
         self.reading_transaction = reading_transaction

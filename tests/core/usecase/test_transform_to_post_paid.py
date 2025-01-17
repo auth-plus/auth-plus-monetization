@@ -13,7 +13,7 @@ from src.core.repository.ledger import LedgerRepository
 from src.core.usecase.driven.creating_discount import CreatingDiscount
 from src.core.usecase.driven.reading_account import ReadingAccount
 from src.core.usecase.driven.reading_transaction import ReadingTransaction
-from src.core.usecase.driven.update_account import UpdateAccount
+from src.core.usecase.driven.update_account import UpdatingAccount
 from src.core.usecase.transform_to_post_paid import TransformToPostPaid
 
 
@@ -43,7 +43,7 @@ def test_should_transform_to_post_paid(session: Session):
     )
     creating_discount: CreatingDiscount = DiscountRepository(session)
     creating_discount.create_discount = MagicMock(return_value=None)
-    update_account: UpdateAccount = AccountRepository(session)
+    update_account: UpdatingAccount = AccountRepository(session)
     update_account.change_type = MagicMock(return_value=None)
     # usecase
     usecase = TransformToPostPaid(

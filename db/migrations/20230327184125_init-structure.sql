@@ -35,6 +35,7 @@ CREATE TABLE IF NOT EXISTS "ledger" (
     "amount" REAL NOT NULL,
     "description" VARCHAR(255) NOT NULL,
     "price_id" UUID,
+    "charge_id" UUID,
     "created_at" TIMESTAMP NOT NULL DEFAULT Timezone('utc', Now()),
     "deleted_at" TIMESTAMP DEFAULT NULL,
     PRIMARY KEY ("id"),
