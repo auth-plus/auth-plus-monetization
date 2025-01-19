@@ -22,7 +22,8 @@ from src.core.usecase.driven.reading_account import ReadingAccount
 from src.core.usecase.driven.reading_discount import ReadingDiscount
 from src.core.usecase.driven.reading_event import ReadingEvent
 from src.core.usecase.driven.reading_transaction import ReadingTransaction
-from src.core.usecase.driven.update_account import UpdateAccount
+from src.core.usecase.driven.update_account import UpdatingAccount
+from src.core.usecase.driven.update_transaction import UpdatingTransaction
 from src.core.usecase.get_total_credit import GetTotalCredit
 from src.core.usecase.receive_credit import ReceiveCredit
 from src.core.usecase.receive_event import ReceiveEvent
@@ -43,7 +44,8 @@ class Core:
             reading_discount: ReadingDiscount = DiscountRepository(session)
             reading_event: ReadingEvent = PriceRepository(session)
             reading_transaction: ReadingTransaction = LedgerRepository(session)
-            update_account: UpdateAccount = AccountRepository(session)
+            updating_account: UpdatingAccount = AccountRepository(session)
+            updating_transaction: UpdatingTransaction = LedgerRepository(session)
 
             account_create = AccountCreate(
                 creating_account,
@@ -52,6 +54,7 @@ class Core:
                 reading_account,
                 billing_updating_invoice,
                 billing_fetching_invoice,
+                updating_transaction,
             )
             get_total_credit = GetTotalCredit(reading_account, reading_transaction)
             receive_credit = ReceiveCredit(
@@ -70,14 +73,14 @@ class Core:
                 reading_account,
                 reading_transaction,
                 creating_discount,
-                update_account,
+                updating_account,
             )
             transform_to_pre_paid = TransformToPrePaid(
                 reading_account,
                 reading_transaction,
                 reading_discount,
                 billing_updating_invoice,
-                update_account,
+                updating_account,
             )
 
             self.account_create = account_create

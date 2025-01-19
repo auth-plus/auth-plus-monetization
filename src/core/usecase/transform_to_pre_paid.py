@@ -10,7 +10,7 @@ from src.core.usecase.driven.billing.billing_updating_invoice import (
 from src.core.usecase.driven.reading_account import ReadingAccount
 from src.core.usecase.driven.reading_discount import ReadingDiscount
 from src.core.usecase.driven.reading_transaction import ReadingTransaction
-from src.core.usecase.driven.update_account import UpdateAccount
+from src.core.usecase.driven.update_account import UpdatingAccount
 
 
 class TransformToPrePaid:
@@ -25,7 +25,7 @@ class TransformToPrePaid:
         reading_transaction: ReadingTransaction,
         reading_discount: ReadingDiscount,
         billing_updating_invoice: BillingUpdatingInvoice,
-        update_account: UpdateAccount,
+        update_account: UpdatingAccount,
     ):
         self.reading_account = reading_account
         self.reading_transaction = reading_transaction

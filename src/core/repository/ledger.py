@@ -5,12 +5,13 @@ from uuid import UUID
 
 from sqlalchemy import TIMESTAMP
 from sqlalchemy import UUID as SQLUUID
-from sqlalchemy import Column, Float, MetaData, String, Table, insert, select
+from sqlalchemy import Column, Float, MetaData, String, Table, insert, select, update
 from sqlalchemy.orm import Session
 
 from src.core.entity.transaction import Transaction
 from src.core.usecase.driven.creating_transaction import CreatingTransaction
 from src.core.usecase.driven.reading_transaction import ReadingTransaction
+from src.core.usecase.driven.update_transaction import UpdatingTransaction
 
 metadata_obj = MetaData()
 
@@ -22,12 +23,13 @@ ledger_table = Table(
     Column("amount", Float, nullable=False),
     Column("description", String(255), nullable=False),
     Column("price_id", SQLUUID),
+    Column("charge_id", SQLUUID),
     Column("created_at", TIMESTAMP, nullable=False),
     Column("deleted_at", TIMESTAMP),
 )
 
 
-class LedgerRepository(CreatingTransaction, ReadingTransaction):
+class LedgerRepository(CreatingTransaction, ReadingTransaction, UpdatingTransaction):
     def __init__(self, session: Session):
         self.session = session
 
@@ -74,3 +76,15 @@ class LedgerRepository(CreatingTransaction, ReadingTransaction):
                     transaction_list,
                 )
             )
+
+    def add_charge(self, account_id: UUID, charge_id: UUID) -> None:
+        query = (
+            update(ledger_table)
+            .values(charge_id=charge_id)
+            .where(
+                ledger_table.c.account_id == account_id,
+                ledger_table.c.charge_id.__eq__(None),
+            )
+        )
+        self.session.execute(query)
+        self.session.commit()

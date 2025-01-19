@@ -18,7 +18,7 @@ from src.core.usecase.driven.billing.billing_updating_invoice import (
 from src.core.usecase.driven.reading_account import ReadingAccount
 from src.core.usecase.driven.reading_discount import ReadingDiscount
 from src.core.usecase.driven.reading_transaction import ReadingTransaction
-from src.core.usecase.driven.update_account import UpdateAccount
+from src.core.usecase.driven.update_account import UpdatingAccount
 from src.core.usecase.transform_to_pre_paid import TransformToPrePaid
 
 
@@ -60,7 +60,7 @@ def test_should_transform_to_pre_paid(session: Session):
     billing_updating_invoice: BillingUpdatingInvoice = BillingService()
     billing_updating_invoice.add_item = MagicMock(return_value=invoice)
     billing_updating_invoice.charge = MagicMock(return_value=None)
-    update_account: UpdateAccount = AccountRepository(session)
+    update_account: UpdatingAccount = AccountRepository(session)
     update_account.change_type = MagicMock(return_value=None)
     # usecase
     usecase = TransformToPrePaid(
