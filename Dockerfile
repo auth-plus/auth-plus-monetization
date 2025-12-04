@@ -1,4 +1,4 @@
-FROM python:3.12.3-slim AS dependency
+FROM python:3.14.1-slim AS dependency
 WORKDIR /app
 
 RUN apt update && apt install python3-dev libpq-dev gcc -y
