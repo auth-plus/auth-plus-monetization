@@ -15,11 +15,11 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: "3.14"
       - name: Install and configure Poetry
         uses: snok/install-poetry@v1
         with:
-          version: 1.8.5
+          version: 2.2.1
           virtualenvs-create: false
           installer-parallel: true
       - name: Installing audit tool
@@ -52,13 +52,13 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: "3.14"
       - name: Running migrations
         run: HOST=localhost make migration/up
       - name: Install and configure Poetry
         uses: snok/install-poetry@v1
         with:
-          version: 1.8.3
+          version: 2.2.1
           virtualenvs-create: false
           installer-parallel: true
       - name: Install depedencies
@@ -83,11 +83,11 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: "3.14"
       - name: Install and configure Poetry
         uses: snok/install-poetry@v1
         with:
-          version: 1.8.3
+          version: 2.2.1
           virtualenvs-create: false
           installer-parallel: true
       - name: Install depedencies
