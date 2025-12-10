@@ -1,46 +1,53 @@
-[tool.poetry]
+[project]
 name = "auth-plus-monetization"
 version = "0.1.0"
 description = ""
-authors = ["Andrew Hanasiro <andrewkhanasiro@gmail.com>"]
+authors = [
+    {name = "AndrewHanasiro",email = "andrewkhanasiro@gmail.com"}
+]
 readme = "README.md"
+requires-python = ">=3.14"
+
+dependencies = [
+    "requests (>=2.32.5,<3.0.0)",
+    "sqlalchemy (>=2.0.45,<3.0.0)",
+    "psycopg2 (>=2.9.11,<3.0.0)",
+    "fastapi (>=0.124.0,<0.125.0)",
+    "uvicorn (>=0.38.0,<0.39.0)",
+    "pydantic (>=2.12.5,<3.0.0)",
+    "python-dotenv (>=1.2.1,<2.0.0)",
+    "kafka-python (>=2.3.0,<3.0.0)",
+    "gevent (>=25.9.1,<26.0.0)",
+    "typing-extensions (>=4.15.0,<5.0.0)",
+    "schedule (>=1.2.2,<2.0.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[dependency-groups]
+dev = [
+    "pytest (>=9.0.2,<10.0.0)",
+    "black (>=25.12.0,<26.0.0)",
+    "flake8 (>=7.3.0,<8.0.0)",
+    "coverage (>=7.13.0,<8.0.0)",
+    "mypy (>=1.19.0,<2.0.0)",
+    "isort (>=7.0.0,<8.0.0)",
+    "flake8-pyproject (>=1.2.4,<2.0.0)",
+    "types-requests (>=2.32.4.20250913,<3.0.0.0)",
+    "httpx (>=0.28.1,<0.29.0)",
+    "responses (>=0.25.8,<0.26.0)"
+]
+[tool.poetry]
 package-mode = false
-
-[tool.poetry.dependencies]
-python = "^3.12"
-requests = "^2.32.3"
-sqlalchemy = "^2.0.36"
-psycopg2 = "^2.9.10"
-fastapi = "^0.115.5"
-uvicorn = "^0.32.1"
-pydantic = "^2.10.0"
-python-dotenv = "^1.0.1"
-kafka-python = "^2.0.2"
-gevent = "^24.11.1"
-typing-extensions = "^4.12.2"
-schedule = "^1.2.2"
-
-[tool.poetry.group.dev.dependencies]
-black = "^24.10.0"
-flake8 = "^7.1.1"
-pytest = "^8.3.3"
-coverage = "^7.6.7"
-mypy = "^1.13.0"
-isort = "^5.13.2"
-flake8-pyproject = "^1.2.3"
-types-requests = "^2.32.0.20241016"
-httpx = "^0.27.2"
-responses = "^0.25.3"
 
 [tool.isort]
 profile = "black"
 
 [tool.flake8]
 max-line-length = 88
-
-[build-system]
-requires = ["poetry-core>=1.8"]
-build-backend = "poetry.core.masonry.api"
 
 [[tool.mypy.overrides]]
 module = ["kafka", "pook"]

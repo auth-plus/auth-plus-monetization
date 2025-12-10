@@ -1,9 +1,9 @@
-FROM python:3.12.3-slim AS dependency
+FROM python:3.14.1-slim AS dependency
 WORKDIR /app
 
 RUN apt update && apt install python3-dev libpq-dev gcc -y
 RUN pip install pipx
-RUN pipx install poetry==1.8.5
+RUN pipx install poetry==2.2.1
 ENV PATH=/root/.local/bin:$PATH
 RUN poetry --version
 RUN poetry config virtualenvs.create false

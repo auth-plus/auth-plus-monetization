@@ -15,11 +15,11 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: "3.14"
       - name: Install and configure Poetry
         uses: snok/install-poetry@v1
         with:
-          version: 1.8.5
+          version: 2.2.1
           virtualenvs-create: false
           installer-parallel: true
       - name: Installing audit tool
@@ -52,13 +52,13 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: "3.14"
       - name: Running migrations
         run: HOST=localhost make migration/up
       - name: Install and configure Poetry
         uses: snok/install-poetry@v1
         with:
-          version: 1.8.3
+          version: 2.2.1
           virtualenvs-create: false
           installer-parallel: true
       - name: Install depedencies
@@ -68,16 +68,10 @@ jobs:
       - name: Exporting lcov and xml
         run: coverage lcov && coverage xml
       - name: SonarCloud Scan
-        uses: sonarsource/sonarcloud-github-action@master
+        uses: SonarSource/sonarqube-scan-action@v6
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      - name: Code Climate Scan
-        uses: paambaati/codeclimate-action@v9.0.0
-        env:
-          CC_TEST_REPORTER_ID: ${{ secrets.CODECLIMATE_TOKEN }}
-        with:
-          coverageLocations: ${{github.workspace}}/coverage.lcov:lcov
       - name: Codacy Scan
         uses: codacy/codacy-coverage-reporter-action@v1.3.0
         with:
@@ -89,11 +83,11 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: "3.14"
       - name: Install and configure Poetry
         uses: snok/install-poetry@v1
         with:
-          version: 1.8.3
+          version: 2.2.1
           virtualenvs-create: false
           installer-parallel: true
       - name: Install depedencies
