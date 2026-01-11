@@ -31,11 +31,11 @@ class TransformToPostPaid:
 
     def transform_to_post_paid(self, external_id: UUID):
         account = self.reading_account.by_external_id(external_id)
-        if account.type is AccountType.POST_PAID:
+        if account.subscription.type is AccountType.POST_PAID_MONTH:
             raise SystemError("This account already is PostPaid")
         total_credit = self._calculate_total_credit(account)
         self._should_create_discount(account.id, total_credit)
-        self.update_account.change_type(account.id, AccountType.POST_PAID)
+        self.update_account.change_type(account.id, AccountType.POST_PAID_MONTH)
 
     def _calculate_total_credit(self, account: Account) -> float:
         transaction_list = self.reading_transaction.by_account_id(

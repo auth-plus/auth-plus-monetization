@@ -35,7 +35,7 @@ class TransformToPrePaid:
 
     def transform_to_pre_paid(self, external_id: UUID):
         account = self.reading_account.by_external_id(external_id)
-        if account.type is AccountType.POST_PAID:
+        if account.subscription.type is AccountType.POST_PAID_MONTH:
             raise SystemError("This account already is PostPaid")
         total_debit = self._calculate_total_debit(account)
         discount = self.reading_discount.by_account_id(account.id)

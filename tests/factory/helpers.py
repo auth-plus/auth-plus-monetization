@@ -6,7 +6,7 @@ from uuid import UUID
 from sqlalchemy import delete, insert, select
 from sqlalchemy.orm import Session
 
-from src.core.entity.account import Account, AccountType
+from src.core.entity.account import Account, AccountType, Subscription
 from src.core.entity.discount import Discount, DiscountType
 from src.core.entity.event import Event, EventType
 from src.core.entity.transaction import Transaction
@@ -27,7 +27,6 @@ def create_account(
         insert(account_table)
         .values(
             external_id=external_id,
-            type=type_,
             created_at=(
                 created_at if created_at is not None else datetime.datetime.now()
             ),
@@ -40,15 +39,34 @@ def create_account(
     session.commit()
     if cursor_user is None:
         raise SystemError("test: create_account something went wrong")
-    (id_, created_at_, deleted_at_) = deepcopy(cursor_user)
-    subscription_insert_line = insert(subscription_table).values(
-        account_id=id_, type=type_
+    (account_id_, created_at_, deleted_at_) = deepcopy(cursor_user)
+    subscription_insert_line = (
+        insert(subscription_table)
+        .values(
+            account_id=account_id_,
+            type=type_,
+            created_at=(
+                created_at if created_at is not None else datetime.datetime.now()
+            ),
+        )
+        .returning(
+            subscription_table.c.id,
+            subscription_table.c.type,
+            subscription_table.c.created_at,
+            subscription_table.c.deleted_at,
+        )
     )
-    cursor_subscription = session.execute(subscription_insert_line)
+    cursor_subscription = session.execute(subscription_insert_line).first()
     if cursor_subscription is None:
         raise SystemError("test: create_account something went wrong")
+    (subscription_id, type_, subscription_created_at_, subscription_deleted_at_) = (
+        deepcopy(cursor_subscription)
+    )
     session.commit()
-    return Account(id_, external_id, type_, created_at_, deleted_at_)
+    subscription = Subscription(
+        subscription_id, type_, subscription_created_at_, subscription_deleted_at_
+    )
+    return Account(account_id_, subscription, external_id, created_at_, deleted_at_)
 
 
 def delete_account(session: Session, id_: UUID):

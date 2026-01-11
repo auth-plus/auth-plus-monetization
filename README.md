@@ -76,7 +76,7 @@ poetry run mypy src/ --check-untyped-defs
 # Running test
 poetry run coverage run -m pytest  # all tests
 poetry run coverage run -m pytest tests/presentation/test_server.py # specific file
-poetry run coverage run -m pytest tests/presentation/test_worker.py -k 'test_should_select_by_account_id' # specific test
+poetry run coverage run -m pytest tests/presentation/test_worker.py -k 'test_worker_post_paid_automation_charge' # specific test
 ```
 
 ## Dev Hints
@@ -85,6 +85,12 @@ poetry run coverage run -m pytest tests/presentation/test_worker.py -k 'test_sho
 
 poetry: <https://python-poetry.org/docs/#installation>
 python: <https://github.com/pyenv/pyenv>
+
+### List all outdated packages
+
+```bash
+poetry show -o
+```
 
 ### Creating new migrations with dbmate
 

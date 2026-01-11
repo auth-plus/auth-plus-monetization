@@ -4,7 +4,7 @@ from uuid import uuid4
 
 from sqlalchemy.orm import Session
 
-from src.core.entity.account import Account, AccountType
+from src.core.entity.account import Account, AccountType, Subscription
 from src.core.entity.billing import Invoice, InvoiceItem
 from src.core.entity.discount import Discount, DiscountType
 from src.core.entity.transaction import Transaction
@@ -26,9 +26,8 @@ def test_should_transform_to_pre_paid(session: Session):
     account_id = uuid4()
     external_id = uuid4()
     account_created_at = datetime.now()
-    account = Account(
-        account_id, external_id, AccountType.PRE_PAID, account_created_at, None
-    )
+    subscription = Subscription(uuid4(), AccountType.PRE_PAID, datetime.now(), None)
+    account = Account(account_id, subscription, external_id, account_created_at, None)
     transaction_1 = Transaction(
         uuid4(), account_id, -1.0, "descrip", uuid4(), datetime.today()
     )

@@ -34,7 +34,7 @@ class ChargeDebit:
             self._charge_single_user(user)
 
     def _charge_single_user(self, user: Account) -> None:
-        if user.type is AccountType.PRE_PAID:
+        if user.subscription.type is AccountType.PRE_PAID:
             return
         current_invoice = self.billing_fetching_invoice.get_current(user.external_id)
         if current_invoice.status != "Draft":

@@ -37,10 +37,9 @@ def test_route_create_account(client: TestClient):
         cursor = session.execute(select_query).first()
         if cursor is None:
             raise SystemError("test: test_route_create_account something went wrong")
-        (id_, external_id, type_, created_at, deleted_at) = deepcopy(cursor)
+        (id_, external_id, created_at, deleted_at) = deepcopy(cursor)
         assert isinstance(id_, UUID)
         assert external_id == external_id
-        assert type_.value == "PRE_PAID"
         assert isinstance(created_at, datetime)
         assert deleted_at is None
         delete_account(session, id_)
