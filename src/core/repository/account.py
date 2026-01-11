@@ -2,7 +2,7 @@ from copy import deepcopy
 from datetime import datetime
 from typing import List
 from uuid import UUID
-from src.config.database import engine
+
 from sqlalchemy import (
     TIMESTAMP,
 )

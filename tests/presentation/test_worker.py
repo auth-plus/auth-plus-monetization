@@ -19,8 +19,8 @@ from tests.factory.helpers import (
 @responses.activate
 def test_worker_post_paid_automation_charge(session: Session):
     now = datetime.datetime.now()
-    one_month_ago = now.replace(month=now.month - 1 if now.month > 1 else 12 )
-    one_month_ago = now.replace(year=now.year if now.month > 1 else now.year -1)
+    one_month_ago = now.replace(month=now.month - 1 if now.month > 1 else 12)
+    one_month_ago = now.replace(year=now.year if now.month > 1 else now.year - 1)
     external_id = uuid4()
     account = create_account(
         session, external_id, AccountType.POST_PAID_MONTH, one_month_ago
