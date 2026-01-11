@@ -4,7 +4,7 @@ from uuid import uuid4
 
 from sqlalchemy.orm import Session
 
-from src.core.entity.account import Account, AccountType
+from src.core.entity.account import Account, AccountType, Subscription
 from src.core.entity.transaction import Transaction
 from src.core.repository.account import AccountRepository
 from src.core.repository.ledger import LedgerRepository
@@ -17,7 +17,8 @@ def test_should_charge_debit(session: Session):
     account_id = uuid4()
     external_id = uuid4()
     created_at = datetime.now()
-    account = Account(account_id, external_id, AccountType.PRE_PAID, created_at, None)
+    subscription = Subscription(uuid4(), AccountType.PRE_PAID, datetime.now(), None)
+    account = Account(account_id, subscription, external_id, created_at, None)
     transaction1 = Transaction(
         uuid4(), account_id, 1.0, "desc", uuid4(), datetime.today()
     )

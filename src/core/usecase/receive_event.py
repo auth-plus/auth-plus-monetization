@@ -40,7 +40,7 @@ class ReceiveEvent:
         transaction = self.creating_transaction.create_transaction(
             account.id, debit, "event receive", event.id
         )
-        if account.type is AccountType.POST_PAID:
+        if account.subscription.type is AccountType.POST_PAID_MONTH:
             item_list = [InvoiceItem(str(event.type), event.price, "BRL", 1)]
             self.billing_updating_invoice.add_item(external_id, item_list)
         return transaction

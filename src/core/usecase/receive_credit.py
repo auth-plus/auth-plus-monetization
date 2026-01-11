@@ -31,7 +31,7 @@ class ReceiveCredit:
 
     def receive_credit(self, external_id: UUID, amount: float):
         account = self.reading_account.by_external_id(external_id)
-        if account.type is AccountType.POST_PAID:
+        if account.subscription.type is AccountType.POST_PAID_MONTH:
             raise FlowPrePaidError()
         credit = InvoiceItem("CREDIT", amount, "BRL", 1.0)
         item_list = [credit]
