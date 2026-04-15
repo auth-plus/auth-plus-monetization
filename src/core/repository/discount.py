@@ -48,7 +48,7 @@ class DiscountRepository(CreatingDiscount, ReadingDiscount):
         self.session.commit()
         if row is None:
             raise SystemError("Something on database did not return")
-        (id_, created_at, deleted_at) = deepcopy(row)
+        id_, created_at, deleted_at = deepcopy(row)
         return Discount(id_, account_id, reason, amount, type_, created_at, deleted_at)
 
     def by_account_id(self, account_id: UUID) -> Discount:
@@ -64,5 +64,5 @@ class DiscountRepository(CreatingDiscount, ReadingDiscount):
         row = self.session.execute(query).first()
         if row is None:
             raise DiscountNotFoundException("discount not found")
-        (id_, account_id, reason, amount, type_, created_at, deleted_at) = deepcopy(row)
+        id_, account_id, reason, amount, type_, created_at, deleted_at = deepcopy(row)
         return Discount(id_, account_id, reason, amount, type_, created_at, deleted_at)

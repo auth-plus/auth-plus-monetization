@@ -35,5 +35,5 @@ class PriceRepository(ReadingEvent):
         cursor = self.session.execute(query).first()
         if cursor is None:
             raise EventNotFoundException("event not found")
-        (id_, event_, price, created_at, deleted_at) = deepcopy(cursor)
+        id_, event_, price, created_at, deleted_at = deepcopy(cursor)
         return Event(id_, event_, price, created_at)

@@ -64,7 +64,7 @@ class AccountRepository(CreatingAccount, ReadingAccount, UpdatingAccount):
         account_row = self.session.execute(insert_line).first()
         if account_row is None:
             raise SystemError("Something on database did not return")
-        (account_id, account_created_at) = deepcopy(account_row)
+        account_id, account_created_at = deepcopy(account_row)
         query_subscription_insert = (
             insert(subscription_table)
             .values(account_id=account_id, type=type_)
@@ -73,7 +73,7 @@ class AccountRepository(CreatingAccount, ReadingAccount, UpdatingAccount):
         subscription_row = self.session.execute(query_subscription_insert)
         if subscription_row is None:
             raise SystemError("Something on database did not return")
-        (subscription_id, subscription_created_at) = deepcopy(account_row)
+        subscription_id, subscription_created_at = deepcopy(account_row)
         self.session.commit()
         subscription = Subscription(
             subscription_id, type_, subscription_created_at, None
@@ -219,8 +219,8 @@ class AccountRepository(CreatingAccount, ReadingAccount, UpdatingAccount):
         user_list = list(map(lambda u: deepcopy(u), users_row))
         resp = []
         for account in user_list:
-            (account_id, external_id, account_created_at, account_deleted_at) = (
-                deepcopy(account)
+            account_id, external_id, account_created_at, account_deleted_at = deepcopy(
+                account
             )
             [subscription] = filter(
                 lambda s: s.account_id == account_id, subscription_list

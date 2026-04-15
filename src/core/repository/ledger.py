@@ -50,7 +50,7 @@ class LedgerRepository(CreatingTransaction, ReadingTransaction, UpdatingTransact
         self.session.commit()
         if row is None:
             raise SystemError("Something on database did not return")
-        (id_, created_at) = deepcopy(row)
+        id_, created_at = deepcopy(row)
         return Transaction(id_, account_id, amount, description, price_id, created_at)
 
     def by_account_id(
