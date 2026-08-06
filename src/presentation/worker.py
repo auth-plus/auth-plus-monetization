@@ -2,7 +2,10 @@ import time
 
 import schedule
 
+from src.config.observability import setup_observability
 from src.core import Core
+
+setup_observability("auth-plus-monetization-worker")
 
 
 def post_paid_automation_charge():
@@ -13,6 +16,7 @@ def post_paid_automation_charge():
 
 # Listing all jobs
 schedule.every().day.at("02:00").do(post_paid_automation_charge)
+
 
 if __name__ == "__main__":
     print("Starting Jobs")

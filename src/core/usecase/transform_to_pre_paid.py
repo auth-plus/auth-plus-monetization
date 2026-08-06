@@ -1,6 +1,7 @@
 from functools import reduce
 from uuid import UUID
 
+from src.config.logger import console
 from src.core.entity.account import Account, AccountType
 from src.core.entity.billing import InvoiceItem
 from src.core.entity.discount import Discount, DiscountType
@@ -34,14 +35,17 @@ class TransformToPrePaid:
         self.update_account = update_account
 
     def transform_to_pre_paid(self, external_id: UUID):
+        console.info(f"Transforming external_id={external_id} to PrePaid")
         account = self.reading_account.by_external_id(external_id)
         if account.subscription.type is AccountType.POST_PAID_MONTH:
+            console.error(f"Account {account.id} is already PostPaid")
             raise SystemError("This account already is PostPaid")
         total_debit = self._calculate_total_debit(account)
         discount = self.reading_discount.by_account_id(account.id)
         amount = self._apply_discount(total_debit, discount)
         self._charge_debit(external_id, amount)
         self.update_account.change_type(account.id, AccountType.PRE_PAID)
+        console.info(f"Successfully transformed account {account.id} to PrePaid")
 
     def _calculate_total_debit(self, account: Account):
         transaction_list = self.reading_transaction.by_account_id(
@@ -58,11 +62,15 @@ class TransformToPrePaid:
 
     def _charge_debit(self, external_id: UUID, amount: float) -> None:
         if amount < 0:
+            console.info(f"Charging debit of {amount} for external_id={external_id}")
             item = InvoiceItem("PostPaid transform", amount, "BRL", 1.0)
             invoice = self.billing_updating_invoice.add_item(external_id, [item])
             self.billing_updating_invoice.charge(invoice.id)
         else:
             if amount > 0:
+                console.error(
+                    f"PostPaid Account {external_id} has credit, which is not allowed"
+                )
                 raise ValueError(
                     "PostPaid Account should not have credit, only debit or 0"
                 )

@@ -13,6 +13,7 @@ services:
       PYTHON_ENV: development
       DATABASE_URL: postgresql+psycopg2://root:db_password@database:5432/monetization
       KAFKA_URL: localhost:9092
+      UPTRACE_DSN: http://otelcol:4317
     volumes:
       - .:/app
     restart: always
@@ -29,12 +30,13 @@ services:
       PYTHON_ENV: development
       DATABASE_URL: postgresql+psycopg2://root:db_password@database:5432/monetization
       KAFKA_URL: localhost:9092
+      UPTRACE_DSN: http://otelcol:4317
     volumes:
       - .:/app
     restart: always
     networks:
       - monetization-net
-  
+
   database:
     container_name: postgres
     image: postgres:15.1

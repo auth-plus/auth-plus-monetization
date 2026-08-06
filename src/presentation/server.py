@@ -2,11 +2,17 @@ from datetime import datetime
 from uuid import UUID
 
 from fastapi import FastAPI
+from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
 from pydantic import BaseModel
 
+from src.config.observability import setup_observability
 from src.core import Core
 
+setup_observability("auth-plus-monetization")
+
 app = FastAPI()
+
+FastAPIInstrumentor.instrument_app(app)
 
 
 @app.get("/health")

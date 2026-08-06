@@ -6,8 +6,11 @@ from kafka import (
 
 from src.config.envvar import EnvVars
 from src.config.logger import console
+from src.config.observability import setup_observability
 from src.core import Core
 from src.core.helpers import is_valid_uuid
+
+setup_observability("auth-plus-monetization-kafka")
 
 topics = [
     "2FA_EMAIL_CREATED",
