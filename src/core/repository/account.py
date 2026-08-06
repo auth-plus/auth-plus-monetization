@@ -70,10 +70,10 @@ class AccountRepository(CreatingAccount, ReadingAccount, UpdatingAccount):
             .values(account_id=account_id, type=type_)
             .returning(subscription_table.c.id, subscription_table.c.created_at)
         )
-        subscription_row = self.session.execute(query_subscription_insert)
+        subscription_row = self.session.execute(query_subscription_insert).first()
         if subscription_row is None:
             raise SystemError("Something on database did not return")
-        subscription_id, subscription_created_at = deepcopy(account_row)
+        subscription_id, subscription_created_at = deepcopy(subscription_row)
         self.session.commit()
         subscription = Subscription(
             subscription_id, type_, subscription_created_at, None

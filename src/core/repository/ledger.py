@@ -1,11 +1,23 @@
 from copy import deepcopy
 from datetime import datetime
-from typing import List
+from typing import List, Optional
 from uuid import UUID
 
-from sqlalchemy import TIMESTAMP
+from sqlalchemy import (
+    TIMESTAMP,
+)
 from sqlalchemy import UUID as SQLUUID
-from sqlalchemy import Column, Float, MetaData, String, Table, insert, select, update
+from sqlalchemy import (
+    Column,
+    Float,
+    MetaData,
+    String,
+    Table,
+    and_,
+    insert,
+    select,
+    update,
+)
 from sqlalchemy.orm import Session
 
 from src.core.entity.transaction import Transaction
@@ -54,9 +66,19 @@ class LedgerRepository(CreatingTransaction, ReadingTransaction, UpdatingTransact
         return Transaction(id_, account_id, amount, description, price_id, created_at)
 
     def by_account_id(
-        self, account_id: UUID, date_start: datetime, date_end=datetime.now()
+        self,
+        account_id: UUID,
+        date_start: datetime,
+        date_end: Optional[datetime] = None,
     ) -> List[Transaction]:
-        query = select(ledger_table).where(ledger_table.c.account_id == account_id)
+        conditions = [
+            ledger_table.c.account_id == account_id,
+            ledger_table.c.created_at >= date_start,
+        ]
+        if date_end is not None:
+            conditions.append(ledger_table.c.created_at <= date_end)
+
+        query = select(ledger_table).where(and_(*conditions))
         cursor = self.session.execute(query).all()
         self.session.commit()
         if cursor is None:
@@ -83,7 +105,7 @@ class LedgerRepository(CreatingTransaction, ReadingTransaction, UpdatingTransact
             .values(charge_id=charge_id)
             .where(
                 ledger_table.c.account_id == account_id,
-                ledger_table.c.charge_id.__eq__(None),
+                ledger_table.c.charge_id.is_(None),
             )
         )
         self.session.execute(query)

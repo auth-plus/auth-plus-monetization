@@ -37,9 +37,9 @@ class TransformToPrePaid:
     def transform_to_pre_paid(self, external_id: UUID):
         console.info(f"Transforming external_id={external_id} to PrePaid")
         account = self.reading_account.by_external_id(external_id)
-        if account.subscription.type is AccountType.POST_PAID_MONTH:
-            console.error(f"Account {account.id} is already PostPaid")
-            raise SystemError("This account already is PostPaid")
+        if account.subscription.type is AccountType.PRE_PAID:
+            console.error(f"Account {account.id} is already PrePaid")
+            raise SystemError("This account already is PrePaid")
         total_debit = self._calculate_total_debit(account)
         discount = self.reading_discount.by_account_id(account.id)
         amount = self._apply_discount(total_debit, discount)
