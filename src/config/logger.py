@@ -5,6 +5,7 @@ from src.config.envvar import EnvVars
 
 request_id_ctx: ContextVar[str] = ContextVar("request_id", default="")
 
+
 class ContextFormatter(logging.Formatter):
     def format(self, record):
         # Inject defaults for missing custom attributes
@@ -14,6 +15,7 @@ class ContextFormatter(logging.Formatter):
             # LoggingInstrumentor exposes otelTraceID / otelSpanID
             record.trace_id = getattr(record, "otelTraceID", "N/A") or "N/A"
         return super().format(record)
+
 
 FORMAT = ContextFormatter(
     "[%(asctime)s] [%(levelname)s] [request_id=%(request_id)s] "
@@ -26,6 +28,4 @@ logging.getLogger("uvicorn.access").addHandler(handler)
 console = logging.getLogger(EnvVars.APP_NAME)
 console.addHandler(handler)
 console.setLevel(logging.INFO)
-# Keep records out of the root logger so the OTLP handler on this logger
-# (attached by observability.py) is the only export path.
 console.propagate = False

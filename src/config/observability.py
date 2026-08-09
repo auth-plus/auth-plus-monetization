@@ -7,9 +7,9 @@ from opentelemetry.instrumentation.logging import LoggingInstrumentor
 from opentelemetry.instrumentation.requests import RequestsInstrumentor
 from opentelemetry.instrumentation.sqlalchemy import SQLAlchemyInstrumentor
 from opentelemetry.sdk._logs import LoggerProvider, LoggingHandler
-from opentelemetry.sdk.resources import Resource
 from opentelemetry.sdk._logs.export import BatchLogRecordProcessor
-    
+from opentelemetry.sdk.resources import Resource
+
 from src.config.envvar import EnvVars
 
 
