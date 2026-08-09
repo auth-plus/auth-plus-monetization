@@ -6,7 +6,7 @@ on:
     branches: [staging, main]
 
 env:
-  POETRY_VERSION: 1.4.1
+  POETRY_VERSION: 2.4.1
 
 jobs:
   Audit:
@@ -19,7 +19,7 @@ jobs:
       - name: Install and configure Poetry
         uses: snok/install-poetry@v1
         with:
-          version: 2.2.1
+          version: ${{ env.POETRY_VERSION }}
           virtualenvs-create: false
           installer-parallel: true
       - name: Installing audit tool
@@ -58,7 +58,7 @@ jobs:
       - name: Install and configure Poetry
         uses: snok/install-poetry@v1
         with:
-          version: 2.2.1
+          version: ${{ env.POETRY_VERSION }}
           virtualenvs-create: false
           installer-parallel: true
       - name: Install depedencies
@@ -87,7 +87,7 @@ jobs:
       - name: Install and configure Poetry
         uses: snok/install-poetry@v1
         with:
-          version: 2.2.1
+          version: ${{ env.POETRY_VERSION }}
           virtualenvs-create: false
           installer-parallel: true
       - name: Install depedencies
