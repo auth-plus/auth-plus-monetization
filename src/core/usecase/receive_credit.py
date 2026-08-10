@@ -1,5 +1,6 @@
 from uuid import UUID
 
+from src.config.logger import console
 from src.core.entity.account import AccountType
 from src.core.entity.billing import InvoiceItem
 from src.core.helpers import FlowPrePaidError
@@ -30,8 +31,12 @@ class ReceiveCredit:
         self.creating_transaction = creating_transaction
 
     def receive_credit(self, external_id: UUID, amount: float):
+        console.info(f"Receiving credit of {amount} for external_id={external_id}")
         account = self.reading_account.by_external_id(external_id)
         if account.subscription.type is AccountType.POST_PAID_MONTH:
+            console.error(
+                f"Account {account.id} is POST_PAID_MONTH, cannot receive credit"
+            )
             raise FlowPrePaidError()
         credit = InvoiceItem("CREDIT", amount, "BRL", 1.0)
         item_list = [credit]
@@ -41,4 +46,5 @@ class ReceiveCredit:
         transaction = self.creating_transaction.create_transaction(
             account.id, amount, "credit receive", None
         )
+        console.info(f"Successfully added credit of {amount} to account {account.id}")
         return transaction

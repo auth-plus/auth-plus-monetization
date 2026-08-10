@@ -3,7 +3,7 @@ WORKDIR /app
 
 RUN apt update && apt install python3-dev libpq-dev gcc -y
 RUN pip install pipx
-RUN pipx install poetry==2.2.1
+RUN pipx install poetry==2.4.1
 ENV PATH=/root/.local/bin:$PATH
 RUN poetry --version
 RUN poetry config virtualenvs.create false

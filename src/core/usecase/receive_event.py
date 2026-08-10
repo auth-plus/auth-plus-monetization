@@ -1,5 +1,6 @@
 from uuid import UUID
 
+from src.config.logger import console
 from src.core.entity.account import AccountType
 from src.core.entity.billing import InvoiceItem
 from src.core.entity.event import convert_str_to_event_type
@@ -33,6 +34,7 @@ class ReceiveEvent:
         self.billing_updating_invoice = billing_updating_invoice
 
     def receive_event(self, external_id: UUID, event_input: str) -> Transaction:
+        console.info(f"Receiving event '{event_input}' for external_id={external_id}")
         event_type = convert_str_to_event_type(event_input)
         event = self.reading_event.by_event(event_type)
         debit = -event.price
@@ -41,6 +43,12 @@ class ReceiveEvent:
             account.id, debit, "event receive", event.id
         )
         if account.subscription.type is AccountType.POST_PAID_MONTH:
+            console.info(
+                f"Account {account.id} is POST_PAID_MONTH, adding item to invoice"
+            )
             item_list = [InvoiceItem(str(event.type), event.price, "BRL", 1)]
             self.billing_updating_invoice.add_item(external_id, item_list)
+        console.info(
+            f"Successfully processed event '{event_input}' for account {account.id}"
+        )
         return transaction
