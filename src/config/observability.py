@@ -1,12 +1,14 @@
 import logging
+import os
 
 import uptrace
 from opentelemetry.exporter.otlp.proto.grpc._log_exporter import OTLPLogExporter
 from opentelemetry.instrumentation.kafka import KafkaInstrumentor
 from opentelemetry.instrumentation.logging import LoggingInstrumentor
+from opentelemetry.instrumentation.logging.handler import LoggingHandler
 from opentelemetry.instrumentation.requests import RequestsInstrumentor
 from opentelemetry.instrumentation.sqlalchemy import SQLAlchemyInstrumentor
-from opentelemetry.sdk._logs import LoggerProvider, LoggingHandler
+from opentelemetry.sdk._logs import LoggerProvider
 from opentelemetry.sdk._logs.export import BatchLogRecordProcessor
 from opentelemetry.sdk.resources import Resource
 
@@ -14,6 +16,9 @@ from src.config.envvar import EnvVars
 
 
 def setup_observability(service_name: str):
+    if os.getenv("UPTRACE_DISABLED") == "True":
+        return
+
     uptrace.configure_opentelemetry(
         dsn=EnvVars.UPTRACE_DSN,
         service_name=service_name,

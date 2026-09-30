@@ -26,7 +26,9 @@ def test_should_transform_to_pre_paid(session: Session):
     account_id = uuid4()
     external_id = uuid4()
     account_created_at = datetime.now()
-    subscription = Subscription(uuid4(), AccountType.PRE_PAID, datetime.now(), None)
+    subscription = Subscription(
+        uuid4(), AccountType.POST_PAID_MONTH, datetime.now(), None
+    )
     account = Account(account_id, subscription, external_id, account_created_at, None)
     transaction_1 = Transaction(
         uuid4(), account_id, -1.0, "descrip", uuid4(), datetime.today()
@@ -81,3 +83,30 @@ def test_should_transform_to_pre_paid(session: Session):
     )
     billing_updating_invoice.charge.assert_called_once_with(invoice.id)
     update_account.change_type.assert_called_once_with(account_id, AccountType.PRE_PAID)
+
+
+def test_should_raise_error_when_account_is_already_pre_paid(session: Session):
+    import pytest
+
+    account_id = uuid4()
+    external_id = uuid4()
+    subscription = Subscription(uuid4(), AccountType.PRE_PAID, datetime.now(), None)
+    account = Account(account_id, subscription, external_id, datetime.now(), None)
+
+    reading_account: ReadingAccount = AccountRepository(session)
+    reading_account.by_external_id = MagicMock(return_value=account)
+    reading_transaction: ReadingTransaction = LedgerRepository(session)
+    reading_discount: ReadingDiscount = DiscountRepository(session)
+    billing_updating_invoice: BillingUpdatingInvoice = BillingService()
+    update_account: UpdatingAccount = AccountRepository(session)
+
+    usecase = TransformToPrePaid(
+        reading_account,
+        reading_transaction,
+        reading_discount,
+        billing_updating_invoice,
+        update_account,
+    )
+
+    with pytest.raises(SystemError, match="This account already is PrePaid"):
+        usecase.transform_to_pre_paid(external_id)

@@ -1,4 +1,7 @@
+import os
 from typing import Generator
+
+os.environ["UPTRACE_DISABLED"] = "True"
 
 import pytest
 from fastapi import FastAPI
