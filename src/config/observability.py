@@ -1,4 +1,5 @@
 import logging
+import os
 
 import uptrace
 from opentelemetry.exporter.otlp.proto.grpc._log_exporter import OTLPLogExporter
@@ -15,6 +16,9 @@ from src.config.envvar import EnvVars
 
 
 def setup_observability(service_name: str):
+    if os.getenv("UPTRACE_DISABLED") == "True":
+        return
+
     uptrace.configure_opentelemetry(
         dsn=EnvVars.UPTRACE_DSN,
         service_name=service_name,

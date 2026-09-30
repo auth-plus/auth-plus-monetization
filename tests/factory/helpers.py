@@ -39,7 +39,7 @@ def create_account(
     session.commit()
     if cursor_user is None:
         raise SystemError("test: create_account something went wrong")
-    (account_id_, created_at_, deleted_at_) = deepcopy(cursor_user)
+    account_id_, created_at_, deleted_at_ = deepcopy(cursor_user)
     subscription_insert_line = (
         insert(subscription_table)
         .values(
@@ -59,7 +59,7 @@ def create_account(
     cursor_subscription = session.execute(subscription_insert_line).first()
     if cursor_subscription is None:
         raise SystemError("test: create_account something went wrong")
-    (subscription_id, type_, subscription_created_at_, subscription_deleted_at_) = (
+    subscription_id, type_, subscription_created_at_, subscription_deleted_at_ = (
         deepcopy(cursor_subscription)
     )
     session.commit()
@@ -95,7 +95,7 @@ def create_discount(
     cursor = session.execute(insert_line).first()
     if cursor is None:
         raise SystemError("test: create_discount something went wrong")
-    (id_, deleted_at, created_at) = deepcopy(cursor)
+    id_, deleted_at, created_at = deepcopy(cursor)
     session.commit()
     return Discount(id_, account_id, reason, amount, type_, created_at, deleted_at)
 
@@ -117,7 +117,7 @@ def get_event(session: Session):
     session.commit()
     if cursor is None:
         raise SystemError("test: create_event something went wrong")
-    (id_, event_, value_, created_at, deleted_at) = deepcopy(cursor)
+    id_, event_, value_, created_at, deleted_at = deepcopy(cursor)
     return Event(id_, event_, value_, created_at)
 
 
@@ -138,7 +138,7 @@ def create_transaction(
     cursor = session.execute(insert_line).first()
     if cursor is None:
         raise SystemError("test: create_transaction something went wrong")
-    (id_, created_at) = deepcopy(cursor)
+    id_, created_at = deepcopy(cursor)
     session.commit()
     return Transaction(id_, account_id, amount, description, event_id, created_at)
 

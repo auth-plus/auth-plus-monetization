@@ -36,7 +36,7 @@ def test_should_select_by_account_id(session: Session):
     account = create_account(session, uuid4(), AccountType.PRE_PAID)
     transaction = create_transaction(session, account.id, 123.4, "descript", event.id)
     repository = LedgerRepository(session)
-    result = repository.by_account_id(account.id, datetime.now())
+    result = repository.by_account_id(account.id, account.created_at)
     assert len(result) == 1
     assert isinstance(result[0].id, UUID)
     assert result[0].account_id == account.id

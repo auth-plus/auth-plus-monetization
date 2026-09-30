@@ -22,6 +22,8 @@ def test_should_create(session: Session):
     result = repository.create(external_id, type_)
     assert isinstance(result.id, UUID)
     assert result.external_id == external_id
+    assert isinstance(result.subscription.id, UUID)
+    assert result.subscription.id != result.id
     assert result.subscription.type == type_
     assert result.deleted_at is None
     assert isinstance(result.created_at, datetime)
