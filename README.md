@@ -6,7 +6,7 @@
 
 The `auth-plus-monetization` service is the core monetization and metering engine for the Auth+ ecosystem. It handles usage-based event pricing, financial credit ledgers, multi-model billing subscriptions (pre-paid and post-paid), plan conversions, and billing orchestration with the `auth-plus-billing` service.
 
-Built with **Python 3.14+**, **FastAPI**, **SQLAlchemy**, and **PostgreSQL 17**, following strict **Hexagonal Architecture (Ports & Adapters)** principles.
+Built with **Python 3.15+**, **FastAPI**, **SQLAlchemy**, and **PostgreSQL 17**, following strict **Hexagonal Architecture (Ports & Adapters)** principles.
 
 ---
 
@@ -174,8 +174,8 @@ The scheduled worker (`src.presentation.worker`) executes periodically using the
 
 ## Prerequisites
 
-- **Python:** `v3.14+`
-- **Poetry:** `v2.0+`
+- **Python:** `v3.15+`
+- **uv:** `v2.0+`
 - **Docker & Docker Compose:** `v23.0+`
 - **dbmate:** `v1.16+` (for managing schema migrations)
 
@@ -200,7 +200,7 @@ BILLING_HOST=http://localhost:5002
 Install Python dependencies:
 
 ```bash
-poetry install
+uv install
 ```
 
 ### 2. Infrastructure with Docker
@@ -219,13 +219,13 @@ make infra/down
 
 ```bash
 # 1. Start the HTTP API Server (port 5004 with hot-reload)
-poetry run uvicorn src.presentation.server:app --host 0.0.0.0 --port 5004 --reload
+uv run uvicorn src.presentation.server:app --host 0.0.0.0 --port 5004 --reload
 
 # 2. Start the Scheduled Background Worker
-poetry run python -m src.presentation.worker
+uv run python -m src.presentation.worker
 
 # 3. Start the Kafka Event Consumer
-poetry run python -m src.presentation.kafka
+uv run python -m src.presentation.kafka
 ```
 
 ---
@@ -239,24 +239,24 @@ poetry run python -m src.presentation.kafka
 make ci
 
 # Or run individual tools
-poetry run black src/ tests/
-poetry run isort src/ tests/
-poetry run flake8 src/ tests/
-poetry run mypy src/ --check-untyped-defs
+uv run black src/ tests/
+uv run isort src/ tests/
+uv run flake8 src/ tests/
+uv run mypy src/ --check-untyped-defs
 ```
 
 ### Automated Tests
 
 ```bash
 # Run unit & integration tests with coverage
-poetry run coverage run -m pytest
-poetry run coverage report -m
+uv run coverage run -m pytest
+uv run coverage report -m
 
 # Run specific test file
-poetry run pytest tests/presentation/test_server.py
+uv run pytest tests/presentation/test_server.py
 
 # Run specific test case
-poetry run pytest tests/presentation/test_worker.py -k "test_worker_post_paid_automation_charge"
+uv run pytest tests/presentation/test_worker.py -k "test_worker_post_paid_automation_charge"
 
 # Run tests in Docker container environment (mimics CI)
 make test
@@ -285,10 +285,10 @@ make migration/up
 If VS Code fails to locate imported dependencies:
 
 ```bash
-poetry config virtualenvs.in-project true
-poetry env list
-poetry env remove <env-name>
-poetry install
+uv config virtualenvs.in-project true
+uv env list
+uv env remove <env-name>
+uv install
 ```
 
 Then in VS Code press `Ctrl+Shift+P` $\rightarrow$ `Python: Select Interpreter` $\rightarrow$ Select `.venv/bin/python`.
@@ -312,5 +312,5 @@ sudo apt update && sudo apt install -y python3-dev libpq-dev gcc
 ### Check Outdated Dependencies
 
 ```bash
-poetry show -o
+uv show -o
 ```
