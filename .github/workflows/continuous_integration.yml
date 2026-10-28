@@ -6,26 +6,24 @@ on:
     branches: [staging, main]
 
 env:
-  POETRY_VERSION: 2.4.1
+  UV_VERSION: "0.13.6"
+  PYTHON_VERSION: "3.15"
 
 jobs:
   Audit:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - uses: actions/setup-python@v6
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
         with:
-          python-version: "3.14"
-      - name: Install and configure Poetry
-        uses: snok/install-poetry@v1
-        with:
-          version: ${{ env.POETRY_VERSION }}
-          virtualenvs-create: false
-          installer-parallel: true
-      - name: Installing audit tool
-        run: poetry self add poetry-audit-plugin
-      - name: Executing
-        run: poetry audit
+          version: ${{ env.UV_VERSION }}
+          enable-cache: true
+      - name: Set up Python
+        run: uv python install ${{ env.PYTHON_VERSION }}
+      - name: Run vulnerability audit
+        run: uvx pip-audit
+
   Test:
     runs-on: ubuntu-latest
     services:
@@ -50,23 +48,21 @@ jobs:
       KAFKA_URL:
     steps:
       - uses: actions/checkout@v6
-      - uses: actions/setup-python@v6
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
         with:
-          python-version: "3.14"
+          version: ${{ env.UV_VERSION }}
+          enable-cache: true
+      - name: Set up Python
+        run: uv python install ${{ env.PYTHON_VERSION }}
+      - name: Install dependencies
+        run: uv sync --frozen
       - name: Running migrations
         run: HOST=localhost make migration/up
-      - name: Install and configure Poetry
-        uses: snok/install-poetry@v1
-        with:
-          version: ${{ env.POETRY_VERSION }}
-          virtualenvs-create: false
-          installer-parallel: true
-      - name: Install depedencies
-        run: poetry install
       - name: Generating Coverage
-        run: coverage run -m pytest
+        run: uv run coverage run -m pytest
       - name: Exporting lcov and xml
-        run: coverage lcov && coverage xml
+        run: uv run coverage lcov && uv run coverage xml
       - name: SonarCloud Scan
         uses: SonarSource/sonarqube-scan-action@v6
         env:
@@ -77,22 +73,21 @@ jobs:
         with:
           project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
           coverage-reports: coverage.xml
+
   Lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - uses: actions/setup-python@v6
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
         with:
-          python-version: "3.14"
-      - name: Install and configure Poetry
-        uses: snok/install-poetry@v1
-        with:
-          version: ${{ env.POETRY_VERSION }}
-          virtualenvs-create: false
-          installer-parallel: true
-      - name: Install depedencies
-        run: poetry install
+          version: ${{ env.UV_VERSION }}
+          enable-cache: true
+      - name: Set up Python
+        run: uv python install ${{ env.PYTHON_VERSION }}
+      - name: Install dependencies
+        run: uv sync --frozen
       - name: Running flake8
-        run: flake8 src/ -v
+        run: uv run flake8 src/ -v
       - name: Running mypy
-        run: mypy src/ -v --check-untyped-defs
+        run: uv run mypy src/ -v --check-untyped-defs

@@ -10,7 +10,7 @@
 
 O `auth-plus-monetization` gerencia como o uso dos serviços da plataforma é tarifado e faturado, suportando modelos de consumo pré-pago com compra de créditos e modelos pós-pagos por faturamento de eventos.
 
-- **Runtime / Linguagem:** Python 3.10+ gerenciado com Poetry
+- **Runtime / Linguagem:** Python 3.10+ gerenciado com uv
 - **Framework Web:** FastAPI com Uvicorn
 - **Persistência Relacional:** PostgreSQL 15.1 (`database:5432/monetization`) via SQLAlchemy
 - **Mensageria:** Apache Kafka (`kafka:9092`) via `confluent-kafka`
@@ -22,16 +22,20 @@ O `auth-plus-monetization` gerencia como o uso dos serviços da plataforma é ta
 ## 2. Regras de Negócio e Modelos de Monetização
 
 ### 2.1. Tipos de Assinatura e Planos (`AccountType`)
+
 O sistema suporta quatro modalidades de subscrição:
+
 - **`PRE_PAID`**: O cliente compra créditos previamente. Cada ação/evento consome saldo do livro-razão (ledger).
 - **`POST_PAID_MONTH`**: O cliente consome eventos ao longo do mês; os itens são acumulados e cobrados na fatura mensal emitida pelo serviço de `billing`.
 - **`POST_PAID_SEMESTER`** / **`POST_PAID_ANNUAL`**: Planos pós-pagos com janelas estendidas de apuração.
 
 ### 2.2. Livro-Razão Contábil (Ledger de Crédito e Débito)
+
 1. **Transações Imutáveis:** Cada movimentação financeira gera um registro imutável em `transaction` vinculado à conta (`account_id`), com valor (`amount`), descrição e data.
 2. **Saldo Total:** O saldo do usuário (`GET /ledger/{external_id}`) é computado a partir do somatório de todas as transações de crédito e débito registradas no histórico.
 
 ### 2.3. Fluxo Pré-Pago (`PRE_PAID`)
+
 1. **Aquisição de Créditos (`POST /ledger/credit`):**
    - Válido exclusivamente para contas `PRE_PAID`. Tentativas de creditar em contas pós-pagas resultam em `FlowPrePaidError`.
    - Ao receber a requisição, o serviço gera uma chamada HTTP síncrona para o serviço `billing` (`POST /invoice` e cobrança imediata).
@@ -40,12 +44,14 @@ O sistema suporta quatro modalidades de subscrição:
    - Eventos tarifáveis debitam o valor configurado na tabela `event`.
 
 ### 2.4. Fluxo Pós-Pago (`POST_PAID_MONTH`)
+
 1. **Tarifação Reativa por Evento (`POST /ledger/debit`):**
    - Ao receber a notificação de um evento tarifável (ex.: envio de SMS, validação de 2FA), o serviço:
      1. Registra o débito correspondente no ledger local para auditoria de consumo.
      2. Dispara uma requisição para o serviço `billing` inserindo um item correspondente (`InvoiceItem`) na fatura em aberto do usuário.
 
 ### 2.5. Migração de Modelo de Cobrança (Transformação de Conta)
+
 - **`PATCH /account/to_post_paid`**: Converte a conta para pós-paga. Exige encerramento da subscrição pré-paga ativa e criação da nova vigência.
 - **`PATCH /account/to_pre_paid`**: Converte a conta para pré-paga. Faturas pós-pagas pendentes no `billing` devem ser liquidadas antes ou associadas ao ciclo final.
 
@@ -69,20 +75,20 @@ O sistema suporta quatro modalidades de subscrição:
 
 ```bash
 # Instalação de dependências do projeto
-poetry install
+uv install
 
 # Execução do servidor web FastAPI com reload
-poetry run uvicorn src.presentation.server:app --host 0.0.0.0 --port 8000 --reload
+uv run uvicorn src.presentation.server:app --host 0.0.0.0 --port 8000 --reload
 
 # Execução de workers de background/kafka
-poetry run python -m src.presentation.worker
+uv run python -m src.presentation.worker
 
 # Suíte de testes unitários e de integração
-poetry run pytest
+uv run pytest
 
 # Formatação e checagem de tipos
-poetry run black .
-poetry run flake8
+uv run black .
+uv run flake8
 ```
 
 ---

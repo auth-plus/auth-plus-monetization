@@ -20,20 +20,20 @@ test:
 
 .PHONY: ci
 ci:
-	poetry run black src/
-	poetry run flake8 src/
-	poetry run isort src/
-	poetry run mypy src/ --check-untyped-defs
-	poetry run black tests/
-	poetry run flake8 tests/
-	poetry run isort tests/
+	uv run black src/
+	uv run flake8 src/
+	uv run isort src/
+	uv run mypy src/ --check-untyped-defs
+	uv run black tests/
+	uv run flake8 tests/
+	uv run isort tests/
 
 .PHONY: ci_test
 ci_test:
-	poetry run black tests/
-	poetry run flake8 tests/
-	poetry run isort tests/
-	poetry run mypy tests/ --check-untyped-defs
+	uv run black tests/
+	uv run flake8 tests/
+	uv run isort tests/
+	uv run mypy tests/ --check-untyped-defs
 
 .PHONY: clean/docker
 clean/docker:

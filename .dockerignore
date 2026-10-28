@@ -2,5 +2,5 @@
 !/db
 !/src
 !/test
-!poetry.lock
+!uv.lock
 !pyproject.toml
